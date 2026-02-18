@@ -61,58 +61,55 @@ setInterval(() => {
 
 // ─── ROUTES ─────────────────────────────────────────
 
+const ALL_ENDPOINTS = [
+  '/api/jobs',
+  '/api/reviews/search', '/api/reviews/summary/:place_id', '/api/reviews/:place_id', '/api/business/:place_id',
+  '/api/airbnb/search', '/api/airbnb/listing/:id', '/api/airbnb/reviews/:listing_id', '/api/airbnb/market-stats',
+  '/api/amazon/product/:asin', '/api/amazon/search', '/api/amazon/bestsellers', '/api/amazon/reviews/:asin',
+  '/api/predictions/trending', '/api/predictions/search', '/api/predictions/details',
+  '/api/discover/feed',
+  '/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews',
+];
+
 app.get('/health', (c) => c.json({
   status: 'healthy',
-  service: process.env.SERVICE_NAME || 'marketplace-service',
-  version: '1.0.0',
+  service: 'marketplace-intelligence',
+  version: '2.0.0',
   timestamp: new Date().toISOString(),
-  endpoints: ['/api/jobs', '/api/reviews/search', '/api/reviews/:place_id', '/api/reviews/summary/:place_id', '/api/business/:place_id'],
+  endpoints: ALL_ENDPOINTS,
 }));
 
 app.get('/', (c) => c.json({
-  name: process.env.SERVICE_NAME || 'job-market-intelligence',
-  description: process.env.SERVICE_DESCRIPTION || 'Job Market Intelligence API (Indeed/LinkedIn)',
-  version: '1.0.0',
-  endpoints: [
-    { method: 'GET', path: '/api/jobs', description: 'Get job listings (Indeed/LinkedIn) with salary + date + proxy metadata' },
-    { method: 'GET', path: '/api/reviews/search', description: 'Search businesses by query + location', price: '0.01 USDC' },
-    { method: 'GET', path: '/api/reviews/:place_id', description: 'Fetch Google reviews by Place ID', price: '0.02 USDC' },
-    { method: 'GET', path: '/api/business/:place_id', description: 'Get business details + review summary', price: '0.01 USDC' },
-    { method: 'GET', path: '/api/reviews/summary/:place_id', description: 'Get review summary stats', price: '0.005 USDC' },
-  ],
+  name: 'marketplace-intelligence',
+  description: 'Marketplace Intelligence API — Multi-vertical web scraping with x402 payment',
+  version: '2.0.0',
+  services: {
+    jobs: { endpoints: ['/api/jobs'], description: 'Job Market Intelligence (Indeed/LinkedIn)' },
+    reviews: { endpoints: ['/api/reviews/search', '/api/reviews/:place_id', '/api/reviews/summary/:place_id', '/api/business/:place_id'], description: 'Google Reviews & Business Data' },
+    airbnb: { endpoints: ['/api/airbnb/search', '/api/airbnb/listing/:id', '/api/airbnb/reviews/:listing_id', '/api/airbnb/market-stats'], description: 'Airbnb Market Intelligence (#78)' },
+    amazon: { endpoints: ['/api/amazon/product/:asin', '/api/amazon/search', '/api/amazon/bestsellers', '/api/amazon/reviews/:asin'], description: 'Amazon BSR Tracking (#72)' },
+    predictions: { endpoints: ['/api/predictions/trending', '/api/predictions/search', '/api/predictions/details'], description: 'Prediction Market Signals (#55)' },
+    discover: { endpoints: ['/api/discover/feed'], description: 'Google News/Discover Feeds (#52)' },
+    appstore: { endpoints: ['/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews'], description: 'App Store Intelligence (#54)' },
+  },
+  totalEndpoints: ALL_ENDPOINTS.length,
   pricing: {
-    amount: process.env.PRICE_USDC || '0.005',
     currency: 'USDC',
+    range: '$0.005 — $0.05 per request',
     networks: [
-      {
-        network: 'solana',
-        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        recipient: '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv',
-        asset: 'USDC',
-        assetAddress: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        settlementTime: '~400ms',
-      },
-      {
-        network: 'base',
-        chainId: 'eip155:8453',
-        recipient: '0xF8cD900794245fc36CBE65be9afc23CDF5103042',
-        asset: 'USDC',
-        assetAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-        settlementTime: '~2s',
-      },
+      { network: 'base', chainId: 'eip155:8453', recipient: '0xF8cD900794245fc36CBE65be9afc23CDF5103042', asset: 'USDC' },
+      { network: 'solana', chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', recipient: '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv', asset: 'USDC' },
     ],
   },
-  infrastructure: 'Proxies.sx mobile proxies (real 4G/5G IPs)',
   links: {
     marketplace: 'https://agents.proxies.sx/marketplace/',
-    skillFile: 'https://agents.proxies.sx/marketplace/skill.md',
     github: 'https://github.com/bolivian-peru/marketplace-service-template',
   },
 }));
 
 app.route('/api', serviceRouter);
 
-app.notFound((c) => c.json({ error: 'Not found', endpoints: ['/', '/health', '/api/jobs', '/api/reviews/search', '/api/reviews/:place_id', '/api/business/:place_id', '/api/reviews/summary/:place_id'] }, 404));
+app.notFound((c) => c.json({ error: 'Not found', endpoints: ALL_ENDPOINTS }, 404));
 
 app.onError((err, c) => {
   console.error(`[ERROR] ${err.message}`);
