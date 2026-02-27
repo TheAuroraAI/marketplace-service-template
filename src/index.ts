@@ -71,6 +71,10 @@ const ALL_ENDPOINTS = [
   '/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews',
   '/api/tiktok/trending', '/api/tiktok/hashtag', '/api/tiktok/creator', '/api/tiktok/sound',
   '/api/food/search', '/api/food/menu', '/api/food/compare',
+  '/api/instagram/profile/:username', '/api/instagram/posts/:username', '/api/instagram/analyze/:username', '/api/instagram/analyze/:username/images', '/api/instagram/audit/:username',
+  '/api/x/search', '/api/x/trending', '/api/x/user/:handle', '/api/x/user/:handle/tweets', '/api/x/thread/:tweet_id',
+  '/api/linkedin/person', '/api/linkedin/company', '/api/linkedin/search/people', '/api/linkedin/company/:id/employees',
+  '/api/marketplace/search', '/api/marketplace/listing/:id', '/api/marketplace/categories', '/api/marketplace/new',
 ];
 
 app.get('/health', (c) => c.json({
@@ -95,6 +99,10 @@ app.get('/', (c) => c.json({
     appstore: { endpoints: ['/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews'], description: 'App Store Intelligence (#54)' },
     tiktok: { endpoints: ['/api/tiktok/trending', '/api/tiktok/hashtag', '/api/tiktok/creator', '/api/tiktok/sound'], description: 'TikTok Trend Intelligence (#51)' },
     food: { endpoints: ['/api/food/search', '/api/food/menu', '/api/food/compare'], description: 'Food Delivery Price Intelligence (#76)' },
+    instagram: { endpoints: ['/api/instagram/profile/:username', '/api/instagram/posts/:username', '/api/instagram/analyze/:username', '/api/instagram/analyze/:username/images', '/api/instagram/audit/:username'], description: 'Instagram Intelligence + AI Vision (#71)' },
+    twitter: { endpoints: ['/api/x/search', '/api/x/trending', '/api/x/user/:handle', '/api/x/user/:handle/tweets', '/api/x/thread/:tweet_id'], description: 'X/Twitter Real-Time Search (#73)' },
+    linkedin: { endpoints: ['/api/linkedin/person', '/api/linkedin/company', '/api/linkedin/search/people', '/api/linkedin/company/:id/employees'], description: 'LinkedIn People & Company Enrichment (#77)' },
+    facebook: { endpoints: ['/api/marketplace/search', '/api/marketplace/listing/:id', '/api/marketplace/categories', '/api/marketplace/new'], description: 'Facebook Marketplace Monitor (#75)' },
   },
   totalEndpoints: ALL_ENDPOINTS.length,
   pricing: {
