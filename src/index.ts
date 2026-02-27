@@ -69,6 +69,8 @@ const ALL_ENDPOINTS = [
   '/api/predictions/trending', '/api/predictions/search', '/api/predictions/details',
   '/api/discover/feed',
   '/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews',
+  '/api/tiktok/trending', '/api/tiktok/hashtag', '/api/tiktok/creator', '/api/tiktok/sound',
+  '/api/food/search', '/api/food/menu', '/api/food/compare',
 ];
 
 app.get('/health', (c) => c.json({
@@ -91,6 +93,8 @@ app.get('/', (c) => c.json({
     predictions: { endpoints: ['/api/predictions/trending', '/api/predictions/search', '/api/predictions/details'], description: 'Prediction Market Signals (#55)' },
     discover: { endpoints: ['/api/discover/feed'], description: 'Google News/Discover Feeds (#52)' },
     appstore: { endpoints: ['/api/appstore/search', '/api/appstore/details', '/api/appstore/charts', '/api/appstore/reviews'], description: 'App Store Intelligence (#54)' },
+    tiktok: { endpoints: ['/api/tiktok/trending', '/api/tiktok/hashtag', '/api/tiktok/creator', '/api/tiktok/sound'], description: 'TikTok Trend Intelligence (#51)' },
+    food: { endpoints: ['/api/food/search', '/api/food/menu', '/api/food/compare'], description: 'Food Delivery Price Intelligence (#76)' },
   },
   totalEndpoints: ALL_ENDPOINTS.length,
   pricing: {

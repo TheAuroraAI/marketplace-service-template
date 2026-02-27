@@ -10,6 +10,8 @@
  *   GET /api/predictions/*           — Prediction market signals
  *   GET /api/discover/*              — Google News/Discover feeds
  *   GET /api/appstore/*              — App Store intelligence
+ *   GET /api/tiktok/*                — TikTok trend intelligence
+ *   GET /api/food/*                  — Food delivery price intelligence
  */
 
 import { Hono } from 'hono';
@@ -22,6 +24,8 @@ import { scrapeProduct, searchAmazon, scrapeBestsellers, scrapeReviews as scrape
 import { getTrendingMarkets, searchMarkets, getMarketDetails } from './scrapers/prediction-market-scraper';
 import { getDiscoverFeed } from './scrapers/google-discover-scraper';
 import { searchApps, getAppDetails, getTopCharts, getAppReviews } from './scrapers/app-store-scraper';
+import { getTrending, getHashtagData, getCreatorProfile, getSoundData } from './scrapers/tiktok-scraper';
+import { searchRestaurants, getMenuPrices, comparePrices } from './scrapers/food-delivery-scraper';
 
 export const serviceRouter = new Hono();
 
@@ -599,5 +603,183 @@ serviceRouter.get('/appstore/reviews', async (c) => {
     return c.json({ ...result, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
   } catch (err: any) {
     return c.json({ error: 'App reviews fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// ─── TIKTOK INTELLIGENCE API ────────────────────────
+// ═══════════════════════════════════════════════════════
+
+serviceRouter.get('/tiktok/trending', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/tiktok/trending', 'TikTok Trending Videos — trending videos, hashtags, and sounds by country', 0.02, walletAddress, {
+      input: { country: 'string (optional, default: "US") — 2-letter country code' },
+      output: { country: 'string', videos: 'TikTokVideo[]', trending_hashtags: '[]', trending_sounds: '[]' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.02);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  try {
+    const ip = await getProxyExitIp();
+    const country = c.req.query('country') || 'US';
+    const result = await getTrending(country, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'TikTok trending fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+serviceRouter.get('/tiktok/hashtag', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/tiktok/hashtag', 'TikTok Hashtag Intelligence — videos and stats for a specific hashtag', 0.01, walletAddress, {
+      input: { tag: 'string (required) — hashtag without #', country: 'string (optional, default: "US")' },
+      output: { tag: 'string', videos: 'TikTokVideo[]', total_views: 'number' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.01);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const tag = c.req.query('tag');
+  if (!tag) return c.json({ error: 'Missing required parameter: tag' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const country = c.req.query('country') || 'US';
+    const result = await getHashtagData(tag, country, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'TikTok hashtag fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+serviceRouter.get('/tiktok/creator', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/tiktok/creator', 'TikTok Creator Profile — followers, following, likes, recent videos', 0.02, walletAddress, {
+      input: { username: 'string (required) — TikTok username with or without @' },
+      output: { username: 'string', nickname: 'string', followers: 'number', following: 'number', likes: 'number', recent_videos: '[]' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.02);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const username = c.req.query('username');
+  if (!username) return c.json({ error: 'Missing required parameter: username' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const result = await getCreatorProfile(username, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'TikTok creator fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+serviceRouter.get('/tiktok/sound', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/tiktok/sound', 'TikTok Sound Intelligence — sound data and associated videos', 0.01, walletAddress, {
+      input: { id: 'string (required) — TikTok sound/music ID' },
+      output: { sound_id: 'string', name: 'string', author: 'string', uses: 'number', videos: '[]' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.01);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const id = c.req.query('id');
+  if (!id) return c.json({ error: 'Missing required parameter: id' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const result = await getSoundData(id, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'TikTok sound fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// ─── FOOD DELIVERY INTELLIGENCE API ─────────────────
+// ═══════════════════════════════════════════════════════
+
+serviceRouter.get('/food/search', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/food/search', 'Food Delivery Search — find restaurants on DoorDash, Uber Eats, and Grubhub', 0.02, walletAddress, {
+      input: { query: 'string (optional) — restaurant name or cuisine', location: 'string (required) — city, zip, or address' },
+      output: { restaurants: '{ name, platform, rating, deliveryFee, deliveryTime, priceRange, cuisine, url }[]', metadata: '{ totalResults, platforms }' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.02);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const location = c.req.query('location');
+  if (!location) return c.json({ error: 'Missing required parameter: location', example: '/api/food/search?query=pizza&location=NYC' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const query = c.req.query('query') || '';
+    const result = await searchRestaurants(query, location, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Food delivery search failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+serviceRouter.get('/food/menu', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/food/menu', 'Food Delivery Menu — get menu items and prices from any DoorDash/Uber Eats/Grubhub URL', 0.02, walletAddress, {
+      input: { url: 'string (required) — restaurant URL from DoorDash, Uber Eats, or Grubhub' },
+      output: { menu: '{ items: { name, price, description, category }[] }' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.02);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const url = c.req.query('url');
+  if (!url) return c.json({ error: 'Missing required parameter: url' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const result = await getMenuPrices(url, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Menu fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+serviceRouter.get('/food/compare', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/food/compare', 'Food Delivery Price Comparison — compare prices across DoorDash, Uber Eats, and Grubhub', 0.03, walletAddress, {
+      input: { query: 'string (required) — restaurant name or cuisine', location: 'string (required) — city, zip, or address' },
+      output: { restaurants: 'RestaurantComparison[]', cheapestPlatform: 'string', metadata: '{ scrapedAt, platforms }' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, 0.03);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const query = c.req.query('query');
+  const location = c.req.query('location');
+  if (!query || !location) return c.json({ error: 'Missing required parameters: query and location', example: '/api/food/compare?query=pizza&location=NYC' }, 400);
+  try {
+    const ip = await getProxyExitIp();
+    const result = await comparePrices(query, location, proxyFetch);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, proxy: { ip, type: 'mobile' }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Food price comparison failed', message: err?.message || String(err) }, 502);
   }
 });
