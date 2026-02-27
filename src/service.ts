@@ -16,6 +16,7 @@
  *   GET /api/x/*                     — X/Twitter real-time search
  *   GET /api/linkedin/*              — LinkedIn people & company enrichment
  *   GET /api/marketplace/*           — Facebook Marketplace monitor
+ *   GET /api/run                     — Ad Verification (Bounty #53)
  */
 
 import { Hono } from 'hono';
@@ -36,6 +37,7 @@ import { getPersonProfile, getCompanyProfile, searchPeople, getCompanyEmployees 
 import { searchMarketplace, getListingDetail as fbGetListingDetail, getCategories, getNewListings } from './scrapers/facebook-marketplace-scraper';
 import { scrapeProperty, searchZillow, getComparableSales, getMarketStatsByZip } from './scrapers/zillow-scraper';
 import { searchReddit, getSubreddit, getTrending as redditGetTrending, getComments } from './scrapers/reddit-scraper';
+import { getSearchAds, getDisplayAds, getAdvertiserAds } from './scrapers/ad-verification-scraper';
 
 export const serviceRouter = new Hono();
 
@@ -1319,6 +1321,7 @@ serviceRouter.get('/zillow/market', async (c) => {
 
 const REDDIT_SEARCH_PRICE = 0.005;
 const REDDIT_COMMENTS_PRICE = 0.01;
+const AD_VERIFICATION_PRICE = 0.03;
 
 serviceRouter.get('/reddit/search', async (c) => {
   const walletAddress = getWallet();
@@ -1411,4 +1414,87 @@ serviceRouter.get('/reddit/thread/*', async (c) => {
     c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
     return c.json({ ...result, meta: { permalink, sort, limit, proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
   } catch (err: any) { return c.json({ error: 'Comment fetch failed', message: err?.message || String(err) }, 502); }
+});
+
+// ═══════════════════════════════════════════════════════
+// ─── AD VERIFICATION API (Bounty #53) ───────────────
+// ═══════════════════════════════════════════════════════
+
+serviceRouter.get('/run', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  const type = c.req.query('type') || 'search_ads';
+
+  const validTypes = ['search_ads', 'display_ads', 'advertiser'];
+  if (!validTypes.includes(type)) {
+    return c.json({ error: 'Invalid type. Must be: search_ads | display_ads | advertiser' }, 400);
+  }
+
+  const outputSchema = {
+    input: {
+      type: '"search_ads"|"display_ads"|"advertiser" (required)',
+      query: 'string (required for search_ads) — search query e.g. "best vpn"',
+      url: 'string (required for display_ads) — webpage URL to check for display ads',
+      domain: 'string (required for advertiser) — advertiser domain e.g. "nordvpn.com"',
+      country: '"US"|"DE"|"FR"|"ES"|"GB"|"PL" (default: "US")',
+    },
+    output: {
+      type: '"search_ads"|"display_ads"|"advertiser"',
+      query: 'string | undefined',
+      country: 'string',
+      timestamp: 'ISO 8601 string',
+      ads: 'EnrichedAd[] — { position, placement, title, description, displayUrl, finalUrl, advertiser, extensions, isResponsive }',
+      organic_count: 'number',
+      total_ads: 'number',
+      ad_positions: '{ top: number, bottom: number }',
+      proxy: '{ country: string, type: "mobile" }',
+    },
+  };
+
+  if (!payment) {
+    return c.json(build402Response(
+      '/api/run',
+      'Mobile Ad Verification — see what ads appear for a query or URL from any country via real 4G/5G mobile carrier IPs',
+      AD_VERIFICATION_PRICE,
+      walletAddress,
+      outputSchema,
+    ), 402);
+  }
+
+  const verification = await verifyPayment(payment, walletAddress, AD_VERIFICATION_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+
+  const country = (c.req.query('country') || 'US').toUpperCase();
+  const validCountries = ['US', 'DE', 'FR', 'ES', 'GB', 'PL'];
+  if (!validCountries.includes(country)) {
+    return c.json({ error: `Invalid country. Supported: ${validCountries.join(', ')}` }, 400);
+  }
+
+  try {
+    let result;
+
+    if (type === 'search_ads') {
+      const query = c.req.query('query');
+      if (!query) return c.json({ error: 'Missing required parameter: query' }, 400);
+      result = await getSearchAds(query, country, proxyFetch);
+    } else if (type === 'display_ads') {
+      const url = c.req.query('url');
+      if (!url) return c.json({ error: 'Missing required parameter: url' }, 400);
+      try { new URL(url); } catch { return c.json({ error: 'Invalid url parameter — must be a full URL' }, 400); }
+      result = await getDisplayAds(url, country, proxyFetch);
+    } else {
+      const domain = c.req.query('domain');
+      if (!domain) return c.json({ error: 'Missing required parameter: domain' }, 400);
+      result = await getAdvertiserAds(domain, country, proxyFetch);
+    }
+
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({
+      ...result,
+      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, verified: true },
+    });
+  } catch (err: any) {
+    return c.json({ error: 'Ad verification failed', message: err?.message || String(err) }, 502);
+  }
 });
