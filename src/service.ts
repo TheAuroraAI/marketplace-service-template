@@ -1214,11 +1214,11 @@ const REALESTATE_SEARCH_PRICE = 0.01;
 const REALESTATE_COMPS_PRICE = 0.03;
 const REALESTATE_MARKET_PRICE = 0.05;
 
-serviceRouter.get('/realestate/property/:zpid', async (c) => {
+serviceRouter.get('/zillow/property/:zpid', async (c) => {
   const walletAddress = getWallet();
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/realestate/property/:zpid', 'Full Zillow property: price, Zestimate, price history, details, neighborhood scores, photos', REALESTATE_PROPERTY_PRICE, walletAddress, {
+    return c.json(build402Response('/api/zillow/property/:zpid', 'Full Zillow property: price, Zestimate, price history, details, neighborhood scores, photos', REALESTATE_PROPERTY_PRICE, walletAddress, {
       input: { zpid: 'string (required, in path) — Zillow Property ID' },
       output: { zpid: 'string', address: 'string', price: 'number', zestimate: 'number', price_history: 'PriceHistoryEvent[]', details: 'PropertyDetails', neighborhood: 'NeighborhoodData', photos: 'string[]' },
     }), 402);
@@ -1237,11 +1237,11 @@ serviceRouter.get('/realestate/property/:zpid', async (c) => {
   } catch (err: any) { return c.json({ error: 'Property lookup failed', message: err?.message || String(err) }, 502); }
 });
 
-serviceRouter.get('/realestate/search', async (c) => {
+serviceRouter.get('/zillow/search', async (c) => {
   const walletAddress = getWallet();
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/realestate/search', 'Search Zillow by address, ZIP, or city with filters', REALESTATE_SEARCH_PRICE, walletAddress, {
+    return c.json(build402Response('/api/zillow/search', 'Search Zillow by address, ZIP, or city with filters', REALESTATE_SEARCH_PRICE, walletAddress, {
       input: { query: 'string (required)', type: '"for_sale"|"for_rent"|"sold"', min_price: 'number', max_price: 'number', beds: 'number', baths: 'number', limit: 'number (default: 20, max: 40)' },
       output: { results: 'SearchResult[] — zpid, address, price, zestimate, beds, baths, sqft, type, status' },
     }), 402);
@@ -1266,11 +1266,11 @@ serviceRouter.get('/realestate/search', async (c) => {
   } catch (err: any) { return c.json({ error: 'Zillow search failed', message: err?.message || String(err) }, 502); }
 });
 
-serviceRouter.get('/realestate/comps/:zpid', async (c) => {
+serviceRouter.get('/zillow/comps/:zpid', async (c) => {
   const walletAddress = getWallet();
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/realestate/comps/:zpid', 'Comparable sales with distance and similarity scores', REALESTATE_COMPS_PRICE, walletAddress, {
+    return c.json(build402Response('/api/zillow/comps/:zpid', 'Comparable sales with distance and similarity scores', REALESTATE_COMPS_PRICE, walletAddress, {
       input: { zpid: 'string (required, in path)', limit: 'number (default: 10, max: 20)' },
       output: { comps: 'CompSale[] — zpid, address, price, sold_date, beds, baths, sqft, distance, similarity' },
     }), 402);
@@ -1290,11 +1290,11 @@ serviceRouter.get('/realestate/comps/:zpid', async (c) => {
   } catch (err: any) { return c.json({ error: 'Comps lookup failed', message: err?.message || String(err) }, 502); }
 });
 
-serviceRouter.get('/realestate/market', async (c) => {
+serviceRouter.get('/zillow/market', async (c) => {
   const walletAddress = getWallet();
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/realestate/market', 'ZIP-level market stats: median value, rent, inventory, days on market', REALESTATE_MARKET_PRICE, walletAddress, {
+    return c.json(build402Response('/api/zillow/market', 'ZIP-level market stats: median value, rent, inventory, days on market', REALESTATE_MARKET_PRICE, walletAddress, {
       input: { zip: 'string (required) — 5-digit US ZIP code' },
       output: { zipcode: 'string', median_home_value: 'number', median_list_price: 'number', median_rent: 'number', avg_days_on_market: 'number', inventory_count: 'number', price_change_yoy: 'number' },
     }), 402);
