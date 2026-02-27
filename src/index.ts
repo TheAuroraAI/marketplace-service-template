@@ -75,6 +75,8 @@ const ALL_ENDPOINTS = [
   '/api/x/search', '/api/x/trending', '/api/x/user/:handle', '/api/x/user/:handle/tweets', '/api/x/thread/:tweet_id',
   '/api/linkedin/person', '/api/linkedin/company', '/api/linkedin/search/people', '/api/linkedin/company/:id/employees',
   '/api/marketplace/search', '/api/marketplace/listing/:id', '/api/marketplace/categories', '/api/marketplace/new',
+  '/api/realestate/property/:zpid', '/api/realestate/search', '/api/realestate/comps/:zpid', '/api/realestate/market',
+  '/api/reddit/search', '/api/reddit/trending', '/api/reddit/subreddit/:name', '/api/reddit/thread/*',
 ];
 
 app.get('/health', (c) => c.json({
@@ -103,6 +105,8 @@ app.get('/', (c) => c.json({
     twitter: { endpoints: ['/api/x/search', '/api/x/trending', '/api/x/user/:handle', '/api/x/user/:handle/tweets', '/api/x/thread/:tweet_id'], description: 'X/Twitter Real-Time Search (#73)' },
     linkedin: { endpoints: ['/api/linkedin/person', '/api/linkedin/company', '/api/linkedin/search/people', '/api/linkedin/company/:id/employees'], description: 'LinkedIn People & Company Enrichment (#77)' },
     facebook: { endpoints: ['/api/marketplace/search', '/api/marketplace/listing/:id', '/api/marketplace/categories', '/api/marketplace/new'], description: 'Facebook Marketplace Monitor (#75)' },
+    realestate: { endpoints: ['/api/realestate/property/:zpid', '/api/realestate/search', '/api/realestate/comps/:zpid', '/api/realestate/market'], description: 'Real Estate Intelligence — Zillow (#79)' },
+    reddit: { endpoints: ['/api/reddit/search', '/api/reddit/trending', '/api/reddit/subreddit/:name', '/api/reddit/thread/*'], description: 'Reddit Intelligence (#68)' },
   },
   totalEndpoints: ALL_ENDPOINTS.length,
   pricing: {

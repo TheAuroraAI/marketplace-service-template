@@ -34,6 +34,8 @@ import { getProfile as igGetProfile, getPosts as igGetPosts, analyzeProfile as i
 import { searchTweets, getTrending as xGetTrending, getUserProfile as xGetUserProfile, getUserTweets, getThread } from './scrapers/x-twitter-scraper';
 import { getPersonProfile, getCompanyProfile, searchPeople, getCompanyEmployees } from './scrapers/linkedin-scraper';
 import { searchMarketplace, getListingDetail as fbGetListingDetail, getCategories, getNewListings } from './scrapers/facebook-marketplace-scraper';
+import { scrapeProperty, searchZillow, getComparableSales, getMarketStatsByZip } from './scrapers/zillow-scraper';
+import { searchReddit, getSubreddit, getTrending as redditGetTrending, getComments } from './scrapers/reddit-scraper';
 
 export const serviceRouter = new Hono();
 
@@ -1201,4 +1203,212 @@ serviceRouter.get('/marketplace/new', async (c) => {
     c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
     return c.json({ ...result, meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
   } catch (err: any) { return c.json({ error: 'Monitor failed', message: err?.message || String(err) }, 502); }
+});
+
+// ═══════════════════════════════════════════════════════
+// ─── REAL ESTATE INTELLIGENCE API (Zillow) ──────────
+// ═══════════════════════════════════════════════════════
+
+const REALESTATE_PROPERTY_PRICE = 0.02;
+const REALESTATE_SEARCH_PRICE = 0.01;
+const REALESTATE_COMPS_PRICE = 0.03;
+const REALESTATE_MARKET_PRICE = 0.05;
+
+serviceRouter.get('/realestate/property/:zpid', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/realestate/property/:zpid', 'Full Zillow property: price, Zestimate, price history, details, neighborhood scores, photos', REALESTATE_PROPERTY_PRICE, walletAddress, {
+      input: { zpid: 'string (required, in path) — Zillow Property ID' },
+      output: { zpid: 'string', address: 'string', price: 'number', zestimate: 'number', price_history: 'PriceHistoryEvent[]', details: 'PropertyDetails', neighborhood: 'NeighborhoodData', photos: 'string[]' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REALESTATE_PROPERTY_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const zpid = c.req.param('zpid');
+  if (!zpid || !/^\d+$/.test(zpid)) return c.json({ error: 'Invalid zpid. Must be numeric.' }, 400);
+  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!checkProxyRateLimit(clientIp)) { c.header('Retry-After', '60'); return c.json({ error: 'Rate limited', retryAfter: 60 }, 429); }
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const property = await scrapeProperty(zpid);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...property, meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Property lookup failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/realestate/search', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/realestate/search', 'Search Zillow by address, ZIP, or city with filters', REALESTATE_SEARCH_PRICE, walletAddress, {
+      input: { query: 'string (required)', type: '"for_sale"|"for_rent"|"sold"', min_price: 'number', max_price: 'number', beds: 'number', baths: 'number', limit: 'number (default: 20, max: 40)' },
+      output: { results: 'SearchResult[] — zpid, address, price, zestimate, beds, baths, sqft, type, status' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REALESTATE_SEARCH_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const query = c.req.query('query');
+  if (!query) return c.json({ error: 'Missing required parameter: query' }, 400);
+  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!checkProxyRateLimit(clientIp)) { c.header('Retry-After', '60'); return c.json({ error: 'Rate limited', retryAfter: 60 }, 429); }
+  const filterType = c.req.query('type') as 'for_sale' | 'for_rent' | 'sold' | undefined;
+  const minPrice = c.req.query('min_price') ? parseInt(c.req.query('min_price')!) : undefined;
+  const maxPrice = c.req.query('max_price') ? parseInt(c.req.query('max_price')!) : undefined;
+  const beds = c.req.query('beds') ? parseInt(c.req.query('beds')!) : undefined;
+  const baths = c.req.query('baths') ? parseInt(c.req.query('baths')!) : undefined;
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '20') || 20, 1), 40);
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const results = await searchZillow(query, { type: filterType, minPrice, maxPrice, beds, baths }, limit);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ query, filters: { type: filterType || null, minPrice: minPrice || null, maxPrice: maxPrice || null, beds: beds || null, baths: baths || null }, results, totalResults: results.length, meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Zillow search failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/realestate/comps/:zpid', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/realestate/comps/:zpid', 'Comparable sales with distance and similarity scores', REALESTATE_COMPS_PRICE, walletAddress, {
+      input: { zpid: 'string (required, in path)', limit: 'number (default: 10, max: 20)' },
+      output: { comps: 'CompSale[] — zpid, address, price, sold_date, beds, baths, sqft, distance, similarity' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REALESTATE_COMPS_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const zpid = c.req.param('zpid');
+  if (!zpid || !/^\d+$/.test(zpid)) return c.json({ error: 'Invalid zpid.' }, 400);
+  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!checkProxyRateLimit(clientIp)) { c.header('Retry-After', '60'); return c.json({ error: 'Rate limited', retryAfter: 60 }, 429); }
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '10') || 10, 1), 20);
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const comps = await getComparableSales(zpid, limit);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ zpid, comps, totalComps: comps.length, meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Comps lookup failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/realestate/market', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/realestate/market', 'ZIP-level market stats: median value, rent, inventory, days on market', REALESTATE_MARKET_PRICE, walletAddress, {
+      input: { zip: 'string (required) — 5-digit US ZIP code' },
+      output: { zipcode: 'string', median_home_value: 'number', median_list_price: 'number', median_rent: 'number', avg_days_on_market: 'number', inventory_count: 'number', price_change_yoy: 'number' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REALESTATE_MARKET_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const zip = c.req.query('zip');
+  if (!zip || !/^\d{5}$/.test(zip)) return c.json({ error: 'Invalid zip. Must be 5-digit US ZIP.' }, 400);
+  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!checkProxyRateLimit(clientIp)) { c.header('Retry-After', '60'); return c.json({ error: 'Rate limited', retryAfter: 60 }, 429); }
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const stats = await getMarketStatsByZip(zip);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...stats, meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Market stats failed', message: err?.message || String(err) }, 502); }
+});
+
+// ═══════════════════════════════════════════════════════
+// ─── REDDIT INTELLIGENCE API ────────────────────────
+// ═══════════════════════════════════════════════════════
+
+const REDDIT_SEARCH_PRICE = 0.005;
+const REDDIT_COMMENTS_PRICE = 0.01;
+
+serviceRouter.get('/reddit/search', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/reddit/search', 'Search Reddit posts by keyword via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
+      input: { query: 'string (required)', sort: '"relevance"|"hot"|"new"|"top"|"comments" (default: "relevance")', time: '"hour"|"day"|"week"|"month"|"year"|"all" (default: "all")', limit: 'number (default: 25, max: 100)', after: 'string (optional) — pagination token' },
+      output: { posts: 'RedditPost[] — title, selftext, author, subreddit, score, upvoteRatio, numComments, createdUtc, permalink, url', after: 'string | null' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const query = c.req.query('query');
+  if (!query) return c.json({ error: 'Missing required parameter: query', example: '/api/reddit/search?query=AI+agents&sort=relevance&time=week' }, 400);
+  const sort = c.req.query('sort') || 'relevance';
+  const time = c.req.query('time') || 'all';
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
+  const after = c.req.query('after') || undefined;
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const result = await searchReddit(query, sort, time, limit, after);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, meta: { query, sort, time, limit, proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Reddit search failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/reddit/trending', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/reddit/trending', 'Get trending/popular posts across Reddit via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
+      input: { limit: 'number (default: 25, max: 100)' },
+      output: { posts: 'RedditPost[] — trending posts from r/popular', after: 'string | null' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const result = await redditGetTrending(limit);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, meta: { limit, proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Reddit trending fetch failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/reddit/subreddit/:name', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/reddit/subreddit/:name', 'Browse a subreddit via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
+      input: { name: 'string (required, in path) — subreddit name', sort: '"hot"|"new"|"top"|"rising" (default: "hot")', time: '"hour"|"day"|"week"|"month"|"year"|"all"', limit: 'number (default: 25, max: 100)', after: 'string (optional)' },
+      output: { posts: 'RedditPost[]', after: 'string | null' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const name = c.req.param('name');
+  if (!name) return c.json({ error: 'Missing subreddit name in URL path' }, 400);
+  const sort = c.req.query('sort') || 'hot';
+  const time = c.req.query('time') || 'all';
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
+  const after = c.req.query('after') || undefined;
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const result = await getSubreddit(name, sort, time, limit, after);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, meta: { subreddit: name, sort, time, limit, proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Subreddit fetch failed', message: err?.message || String(err) }, 502); }
+});
+
+serviceRouter.get('/reddit/thread/*', async (c) => {
+  const walletAddress = getWallet();
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(build402Response('/api/reddit/thread/:permalink', 'Fetch post comments via mobile proxy', REDDIT_COMMENTS_PRICE, walletAddress, {
+      input: { permalink: 'string (required, in path) — Reddit post permalink (e.g., r/programming/comments/abc123/title)', sort: '"best"|"top"|"new"|"controversial"|"old" (default: "best")', limit: 'number (default: 50, max: 200)' },
+      output: { post: 'RedditPost', comments: 'RedditComment[] — { author, body, score, createdUtc, depth, replies }' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, REDDIT_COMMENTS_PRICE);
+  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  const permalink = c.req.path.replace('/api/reddit/thread/', '');
+  if (!permalink || !permalink.includes('comments')) return c.json({ error: 'Invalid permalink — must contain "comments" segment' }, 400);
+  const sort = c.req.query('sort') || 'best';
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '50') || 50, 1), 200);
+  try {
+    const proxy = getProxy(); const ip = await getProxyExitIp();
+    const result = await getComments(permalink, sort, limit);
+    c.header('X-Payment-Settled', 'true'); c.header('X-Payment-TxHash', payment.txHash);
+    return c.json({ ...result, meta: { permalink, sort, limit, proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } }, payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true } });
+  } catch (err: any) { return c.json({ error: 'Comment fetch failed', message: err?.message || String(err) }, 502); }
 });
