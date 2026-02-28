@@ -1207,6 +1207,13 @@ serviceRouter.get('/marketplace/new', async (c) => {
   } catch (err: any) { return c.json({ error: 'Monitor failed', message: err?.message || String(err) }, 502); }
 });
 
+// ─── Alias routes: /api/facebook/marketplace/* ───────────────────────────────
+serviceRouter.get('/facebook/marketplace', (c) => { return c.redirect(`/api/marketplace/search?${new URLSearchParams(Object.fromEntries(Object.entries(c.req.query()))).toString()}`); });
+serviceRouter.get('/facebook/marketplace/search', (c) => { return c.redirect(`/api/marketplace/search?${new URLSearchParams(Object.fromEntries(Object.entries(c.req.query()))).toString()}`); });
+serviceRouter.get('/facebook/marketplace/listing/:id', (c) => { return c.redirect(`/api/marketplace/listing/${c.req.param('id')}`); });
+serviceRouter.get('/facebook/marketplace/categories', (c) => { return c.redirect(`/api/marketplace/categories`); });
+serviceRouter.get('/facebook/marketplace/new', (c) => { return c.redirect(`/api/marketplace/new?${new URLSearchParams(Object.fromEntries(Object.entries(c.req.query()))).toString()}`); });
+
 // ═══════════════════════════════════════════════════════
 // ─── REAL ESTATE INTELLIGENCE API (Zillow) ──────────
 // ═══════════════════════════════════════════════════════
