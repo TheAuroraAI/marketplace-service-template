@@ -1126,6 +1126,9 @@ serviceRouter.get('/linkedin/company/:id/employees', async (c) => {
   } catch (err: any) { return c.json({ error: 'Employee search failed', message: err?.message || String(err) }, 502); }
 });
 
+// ─── Alias routes: /api/linkedin/profile/:handle ──────────────────────────────
+serviceRouter.get('/linkedin/profile/:handle', (c) => { return c.redirect(`/api/linkedin/person?url=linkedin.com/in/${c.req.param('handle')}`); });
+
 // ═══════════════════════════════════════════════════════
 // ─── FACEBOOK MARKETPLACE MONITOR API ───────────────
 // ═══════════════════════════════════════════════════════
