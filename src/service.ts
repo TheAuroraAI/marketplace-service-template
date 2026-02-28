@@ -16,12 +16,13 @@ import { fetchReviews, fetchBusinessDetails, fetchReviewSummary, searchBusinesse
 import { scrapeGoogleMaps, extractDetailedBusiness } from './scrapers/maps-scraper';
 import { researchRouter } from './routes/research';
 import { trendingRouter } from './routes/trending';
-import { 
-  scrapeLinkedInPerson, 
-  scrapeLinkedInCompany, 
-  searchLinkedInPeople, 
-  findCompanyEmployees 
+import {
+  scrapeLinkedInPerson,
+  scrapeLinkedInCompany,
+  searchLinkedInPeople,
+  findCompanyEmployees
 } from './scrapers/linkedin-enrichment';
+import { getTrending, getHashtagData, getCreatorProfile, getSoundData } from './scrapers/tiktok-scraper';
 
 export const serviceRouter = new Hono();
 
