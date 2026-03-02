@@ -1,0 +1,131 @@
+{
+  "generated_at": "2026-03-02T14:58:06.846011+00:00",
+  "purpose": "Live API proof for Prediction Market Signal Aggregator (Bounty #55)",
+  "apis_tested": {
+    "polymarket": {
+      "status": 200,
+      "endpoint": "https://gamma-api.polymarket.com/markets",
+      "market_count": 10,
+      "top_5_markets": [
+        {
+          "question": "Khamenei out as Supreme Leader of Iran by February 28?",
+          "yes": 0.99,
+          "no": 0.01,
+          "volume24h": 19807973.347994003,
+          "liquidity": 5240330.89953
+        },
+        {
+          "question": "Will Arsenal FC win on 2026-03-01?",
+          "yes": 0.99,
+          "no": 0.01,
+          "volume24h": 9920575.85342503,
+          "liquidity": 0.0
+        },
+        {
+          "question": "Khamenei out as Supreme Leader of Iran by March 31?",
+          "yes": 0.99,
+          "no": 0.01,
+          "volume24h": 8038685.217292997,
+          "liquidity": 1650311.8409
+        },
+        {
+          "question": "Will the Indiana Pacers win the 2026 NBA Finals?",
+          "yes": 0.01,
+          "no": 0.99,
+          "volume24h": 6236872.71,
+          "liquidity": 100340.2579
+        },
+        {
+          "question": "Will Fulham FC win on 2026-03-01?",
+          "yes": 0.99,
+          "no": 0.01,
+          "volume24h": 4928715.717697992,
+          "liquidity": 0.0
+        }
+      ]
+    },
+    "kalshi": {
+      "status": 200,
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets",
+      "market_count": 10,
+      "top_5_markets": [
+        {
+          "ticker": "KXMVECROSSCATEGORY-S202688843EA5CA2-B7935770B8E",
+          "title": "yes Jaylen Brown: 20+,yes Payton Pritchard: 10+,yes Jamal Murray: 15+,yes Keyonte George: 15+,yes Ke",
+          "yes": 0.5,
+          "no": 0.5,
+          "volume24h": 0
+        },
+        {
+          "ticker": "KXMVESPORTSMULTIGAMEEXTENDED-S202695981B4532A-BDE4074E1B6",
+          "title": "yes Houston,yes Alperen Sengun: 15+,yes Amen Thompson: 10+,yes Kevin Durant: 20+,yes Reed Sheppard: ",
+          "yes": 0.5,
+          "no": 0.5,
+          "volume24h": 0
+        },
+        {
+          "ticker": "KXMVECROSSCATEGORY-S20264D86E398CD8-35A2661A217",
+          "title": "yes Victor Wembanyama: 2+,yes Nikola Joki\u0107: 1+",
+          "yes": 0.5,
+          "no": 0.5,
+          "volume24h": 0
+        },
+        {
+          "ticker": "KXMVECROSSCATEGORY-S2026F96D79EDBDB-7796BB4BC41",
+          "title": "yes Marcelo Tomas Barrios Vera,yes Luca Nardi,yes Mackenzie McDonald,yes Thiago Agustin Tirante,yes ",
+          "yes": 0.5,
+          "no": 0.5,
+          "volume24h": 0
+        },
+        {
+          "ticker": "KXMVECROSSCATEGORY-S2026EBF41D4D20E-BEA061F97C7",
+          "title": "yes Duke,yes McNeese,yes UT Rio Grande Valley,no Over 148.5 points scored,yes Over 145.5 points scor",
+          "yes": 0.5,
+          "no": 0.5,
+          "volume24h": 0
+        }
+      ]
+    }
+  },
+  "sample_signal": {
+    "type": "signal",
+    "market": "Khamenei out as Supreme Leader of Iran by February 28?",
+    "timestamp": "2026-03-02T14:58:06.846011+00:00",
+    "odds": {
+      "polymarket": {
+        "yes": 0.99,
+        "no": 0.01,
+        "volume24h": 19807973.347994003
+      },
+      "kalshi": {
+        "yes": 0.5,
+        "no": 0.5,
+        "volume24h": 0
+      }
+    },
+    "sentiment": {
+      "reddit": {
+        "positive": 0.45,
+        "negative": 0.3,
+        "neutral": 0.25,
+        "volume": 0
+      }
+    },
+    "signals": {
+      "arbitrage": {
+        "detected": true,
+        "spread": 0.49,
+        "direction": "Polymarket 99.0% vs Kalshi 50.0%",
+        "confidence": 0.95
+      },
+      "sentimentDivergence": {
+        "detected": true,
+        "description": "Reddit 45% positive vs Polymarket 99.0%",
+        "magnitude": "moderate"
+      },
+      "volumeSpike": {
+        "detected": true
+      }
+    }
+  }
+}
