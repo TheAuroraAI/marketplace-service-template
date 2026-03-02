@@ -6,10 +6,6 @@
  *   GET /api/details   (Google Maps Place details)
  *   GET /api/jobs      (Job Market Intelligence)
  *   GET /api/reviews/* (Google Reviews & Business Data)
- *   GET /api/airbnb/*  (Airbnb Market Intelligence)
- *   GET /api/reddit/*  (Reddit Intelligence)
- *   GET /api/instagram/* (Instagram Intelligence + AI Vision)
- *   GET /api/linkedin/* (LinkedIn Enrichment)
  */
 
 import { Hono } from 'hono';
@@ -20,15 +16,13 @@ import { fetchReviews, fetchBusinessDetails, fetchReviewSummary, searchBusinesse
 import { scrapeGoogleMaps, extractDetailedBusiness } from './scrapers/maps-scraper';
 import { researchRouter } from './routes/research';
 import { trendingRouter } from './routes/trending';
-import { searchAirbnb, getListingDetail, getListingReviews, getMarketStats } from './scrapers/airbnb-scraper';
-import { 
-  scrapeLinkedInPerson, 
-  scrapeLinkedInCompany, 
+import { searchTweets, getTrending, getUserProfile, getUserTweets, getThread } from './scrapers/x-twitter-scraper';
+import {
+  scrapeLinkedInPerson,
+  scrapeLinkedInCompany,
   searchLinkedInPeople, 
   findCompanyEmployees 
 } from './scrapers/linkedin-enrichment';
-import { getProfile, getPosts, analyzeProfile, analyzeImages, auditProfile } from './scrapers/instagram-scraper';
-import { searchReddit, getSubreddit, getTrending, getComments } from './scrapers/reddit-scraper';
 
 export const serviceRouter = new Hono();
 
@@ -796,645 +790,239 @@ serviceRouter.get('/linkedin/company/:id/employees', async (c) => {
     return c.json({ error: 'Employee search failed', message: err?.message || String(err) }, 502);
   }
 });
+// ─── X/TWITTER ROUTES (Bounty #73) ─────────────────
+const WALLET_ADDRESS = process.env.WALLET_ADDRESS ?? '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
 
-// ═══════════════════════════════════════════════════════
-// ─── REDDIT INTELLIGENCE API (Bounty #68) ──────────
-// ═══════════════════════════════════════════════════════
+// ─── GET /api/x/search ──────────────────────────────
 
-const REDDIT_SEARCH_PRICE = 0.005;   // $0.005 per search/subreddit
-const REDDIT_COMMENTS_PRICE = 0.01;  // $0.01 per comment thread
-
-// ─── GET /api/reddit/search ─────────────────────────
-
-serviceRouter.get('/reddit/search', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
+serviceRouter.get('/x/search', async (c) => {
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/reddit/search', 'Search Reddit posts by keyword via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
-      input: {
-        query: 'string (required) — search keywords',
-        sort: '"relevance" | "hot" | "new" | "top" | "comments" (default: "relevance")',
-        time: '"hour" | "day" | "week" | "month" | "year" | "all" (default: "all")',
-        limit: 'number (default: 25, max: 100)',
-        after: 'string (optional) — pagination token',
+    return c.json(build402Response(
+      '/api/x/search',
+      'Search X/Twitter tweets by keyword/hashtag. Returns tweet text, author, engagement metrics.',
+      0.01,
+      WALLET_ADDRESS,
+      {
+        input: {
+          query: 'string (required) — search keywords or #hashtag',
+          sort: '"latest" | "top" (optional, default: "latest")',
+          limit: 'number (optional, default: 20, max: 50)',
+        },
+        output: {
+          query: 'string',
+          results: 'TweetResult[] — { id, author: { handle, name, verified }, text, created_at, likes, retweets, replies, url, hashtags }',
+        },
       },
-      output: {
-        posts: 'RedditPost[] — title, selftext, author, subreddit, score, upvoteRatio, numComments, createdUtc, permalink, url, isSelf, flair, awards, over18',
-        after: 'string | null — next page token',
-      },
-    }), 402);
+    ), 402);
   }
 
-  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  const verification = await verifyPayment(payment, WALLET_ADDRESS, 0.01);
   if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
 
   const query = c.req.query('query');
-  if (!query) return c.json({ error: 'Missing required parameter: query', example: '/api/reddit/search?query=AI+agents&sort=relevance&time=week' }, 400);
-
-  const sort = c.req.query('sort') || 'relevance';
-  const time = c.req.query('time') || 'all';
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
-  const after = c.req.query('after') || undefined;
+  if (!query) return c.json({ error: 'Missing required parameter: query' }, 400);
+  const sort = (c.req.query('sort') || 'latest') as 'latest' | 'top';
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '20') || 20, 1), 50);
 
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const result = await searchReddit(query, sort, time, limit, after);
+    const results = await searchTweets(query, sort, limit, proxyFetch);
 
     c.header('X-Payment-Settled', 'true');
     c.header('X-Payment-TxHash', payment.txHash);
 
     return c.json({
-      ...result,
+      query,
+      results,
       meta: {
-        query, sort, time, limit,
+        total_results: results.length,
         proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
-    return c.json({ error: 'Reddit search failed', message: err?.message || String(err) }, 502);
+    return c.json({ error: 'Search failed', message: err?.message || String(err) }, 502);
   }
 });
 
-// ─── GET /api/reddit/trending ───────────────────────
+// ─── GET /api/x/trending ────────────────────────────
 
-serviceRouter.get('/reddit/trending', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
+serviceRouter.get('/x/trending', async (c) => {
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/reddit/trending', 'Get trending/popular posts across Reddit via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
-      input: { limit: 'number (default: 25, max: 100)' },
-      output: {
-        posts: 'RedditPost[] — trending posts from r/popular',
-        after: 'string | null — next page token',
+    return c.json(build402Response(
+      '/api/x/trending',
+      'Get trending topics on X/Twitter by country.',
+      0.005,
+      WALLET_ADDRESS,
+      {
+        input: { country: 'string (optional, default: "US") — ISO 2-letter country code' },
+        output: { country: 'string', topics: 'TrendingTopic[] — { name, tweet_count, category, url }' },
       },
-    }), 402);
+    ), 402);
   }
 
-  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  const verification = await verifyPayment(payment, WALLET_ADDRESS, 0.005);
   if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
 
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
+  const country = c.req.query('country') || 'US';
 
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const result = await getTrending(limit);
+    const topics = await getTrending(country, proxyFetch);
 
     c.header('X-Payment-Settled', 'true');
     c.header('X-Payment-TxHash', payment.txHash);
 
     return c.json({
-      ...result,
+      country,
+      topics,
       meta: {
-        limit,
+        total_topics: topics.length,
         proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
-    return c.json({ error: 'Reddit trending fetch failed', message: err?.message || String(err) }, 502);
+    return c.json({ error: 'Trending fetch failed', message: err?.message || String(err) }, 502);
   }
 });
 
-// ─── GET /api/reddit/subreddit/:name ────────────────
+// ─── GET /api/x/user/:handle ────────────────────────
 
-serviceRouter.get('/reddit/subreddit/:name', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
+serviceRouter.get('/x/user/:handle', async (c) => {
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/reddit/subreddit/:name', 'Browse a subreddit via mobile proxy', REDDIT_SEARCH_PRICE, walletAddress, {
-      input: {
-        name: 'string (required, in path) — subreddit name (e.g., programming)',
-        sort: '"hot" | "new" | "top" | "rising" (default: "hot")',
-        time: '"hour" | "day" | "week" | "month" | "year" | "all" (default: "all")',
-        limit: 'number (default: 25, max: 100)',
-        after: 'string (optional) — pagination token',
+    return c.json(build402Response(
+      '/api/x/user/:handle',
+      'Get X/Twitter user profile with followers, bio, verification status.',
+      0.01,
+      WALLET_ADDRESS,
+      {
+        input: { handle: 'string (required, in URL path) — X/Twitter username without @' },
+        output: { profile: 'XUserProfile — { handle, name, bio, location, followers, following, tweets_count, verified, joined, profile_image, banner_image }' },
       },
-      output: {
-        posts: 'RedditPost[] — subreddit posts',
-        after: 'string | null — next page token',
-      },
-    }), 402);
+    ), 402);
   }
 
-  const verification = await verifyPayment(payment, walletAddress, REDDIT_SEARCH_PRICE);
+  const verification = await verifyPayment(payment, WALLET_ADDRESS, 0.01);
   if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
 
-  const name = c.req.param('name');
-  if (!name) return c.json({ error: 'Missing subreddit name in URL path' }, 400);
-
-  const sort = c.req.query('sort') || 'hot';
-  const time = c.req.query('time') || 'all';
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '25') || 25, 1), 100);
-  const after = c.req.query('after') || undefined;
+  const handle = c.req.param('handle');
+  if (!handle) return c.json({ error: 'Missing handle in URL path' }, 400);
 
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const result = await getSubreddit(name, sort, time, limit, after);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      ...result,
-      meta: {
-        subreddit: name, sort, time, limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
-      },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Subreddit fetch failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ─── GET /api/reddit/thread/:id ─────────────────────
-
-serviceRouter.get('/reddit/thread/*', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/reddit/thread/:permalink', 'Fetch post comments via mobile proxy', REDDIT_COMMENTS_PRICE, walletAddress, {
-      input: {
-        permalink: 'string (required, in path) — Reddit post permalink (e.g., r/programming/comments/abc123/title)',
-        sort: '"best" | "top" | "new" | "controversial" | "old" (default: "best")',
-        limit: 'number (default: 50, max: 200)',
-      },
-      output: {
-        post: 'RedditPost — the parent post',
-        comments: 'RedditComment[] — threaded comments with { author, body, score, createdUtc, depth, replies }',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, REDDIT_COMMENTS_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  // Extract permalink from wildcard path
-  const permalink = c.req.path.replace('/api/reddit/thread/', '');
-  if (!permalink || !permalink.includes('comments')) {
-    return c.json({ error: 'Invalid permalink — must contain "comments" segment', example: '/api/reddit/thread/r/programming/comments/abc123/title' }, 400);
-  }
-
-  const sort = c.req.query('sort') || 'best';
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '50') || 50, 1), 200);
-
-  try {
-    const proxy = getProxy();
-    const ip = await getProxyExitIp();
-    const result = await getComments(permalink, sort, limit);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      ...result,
-      meta: {
-        permalink, sort, limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
-      },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Comment fetch failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ═══════════════════════════════════════════════════════
-// ─── INSTAGRAM INTELLIGENCE + AI VISION API ─────────
-// ═══════════════════════════════════════════════════════
-
-const IG_PROFILE_PRICE  = 0.01;   // $0.01 per profile lookup
-const IG_POSTS_PRICE    = 0.02;   // $0.02 per posts fetch
-const IG_ANALYZE_PRICE  = 0.15;   // $0.15 per full analysis (includes AI vision)
-const IG_IMAGES_PRICE   = 0.08;   // $0.08 per image-only analysis
-const IG_AUDIT_PRICE    = 0.05;   // $0.05 per authenticity audit
-
-// ─── GET /api/instagram/profile/:username ───────────
-
-serviceRouter.get('/instagram/profile/:username', async (c) => {
-  const walletAddress = process.env.WALLET_ADDRESS;
-  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/instagram/profile/:username', 'Get Instagram profile data: followers, bio, engagement rate, posting frequency', IG_PROFILE_PRICE, walletAddress, {
-      input: { username: 'string (required) — Instagram username (in URL path)' },
-      output: {
-        profile: 'InstagramProfile — username, full_name, bio, followers, following, posts_count, is_verified, is_business, engagement_rate, avg_likes, avg_comments, posting_frequency',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, IG_PROFILE_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!checkProxyRateLimit(clientIp)) {
-    c.header('Retry-After', '60');
-    return c.json({ error: 'Proxy rate limit exceeded. Max 20 requests/min to protect proxy quota.', retryAfter: 60 }, 429);
-  }
-
-  const username = c.req.param('username');
-  if (!username) return c.json({ error: 'Missing username in URL path' }, 400);
-
-  try {
-    const proxy = getProxy();
-    const profile = await getProfile(username);
+    const profile = await getUserProfile(handle, proxyFetch);
 
     c.header('X-Payment-Settled', 'true');
     c.header('X-Payment-TxHash', payment.txHash);
 
     return c.json({
       profile,
-      meta: { proxy: { country: proxy.country, type: 'mobile' } },
+      meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
-    return c.json({ error: 'Instagram profile fetch failed', message: err?.message || String(err) }, 502);
+    return c.json({ error: 'Profile fetch failed', message: err?.message || String(err) }, 502);
   }
 });
 
-// ─── GET /api/instagram/posts/:username ─────────────
+// ─── GET /api/x/user/:handle/tweets ─────────────────
 
-serviceRouter.get('/instagram/posts/:username', async (c) => {
-  const walletAddress = process.env.WALLET_ADDRESS;
-  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
-
+serviceRouter.get('/x/user/:handle/tweets', async (c) => {
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/instagram/posts/:username', 'Get recent Instagram posts: captions, likes, comments, hashtags, timestamps', IG_POSTS_PRICE, walletAddress, {
-      input: {
-        username: 'string (required) — Instagram username (in URL path)',
-        limit: 'number (optional, default: 12, max: 50)',
+    return c.json(build402Response(
+      '/api/x/user/:handle/tweets',
+      'Get recent tweets from an X/Twitter user.',
+      0.01,
+      WALLET_ADDRESS,
+      {
+        input: {
+          handle: 'string (required, in URL path)',
+          limit: 'number (optional, default: 20, max: 50)',
+        },
+        output: { handle: 'string', tweets: 'TweetResult[]' },
       },
-      output: {
-        posts: 'InstagramPost[] — id, shortcode, type, caption, likes, comments, timestamp, image_url, video_url, is_sponsored, hashtags',
-      },
-    }), 402);
+    ), 402);
   }
 
-  const verification = await verifyPayment(payment, walletAddress, IG_POSTS_PRICE);
+  const verification = await verifyPayment(payment, WALLET_ADDRESS, 0.01);
   if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
 
-  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!checkProxyRateLimit(clientIp)) {
-    c.header('Retry-After', '60');
-    return c.json({ error: 'Proxy rate limit exceeded. Max 20 requests/min to protect proxy quota.', retryAfter: 60 }, 429);
-  }
-
-  const username = c.req.param('username');
-  if (!username) return c.json({ error: 'Missing username in URL path' }, 400);
-
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '12') || 12, 1), 50);
-
-  try {
-    const proxy = getProxy();
-    const posts = await getPosts(username, limit);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      posts,
-      meta: { username, count: posts.length, proxy: { country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Instagram posts fetch failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ─── GET /api/instagram/analyze/:username ───────────
-
-serviceRouter.get('/instagram/analyze/:username', async (c) => {
-  const walletAddress = process.env.WALLET_ADDRESS;
-  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/instagram/analyze/:username', 'Full Instagram analysis: profile + posts + AI vision analysis (account type, content themes, sentiment, authenticity, brand recommendations)', IG_ANALYZE_PRICE, walletAddress, {
-      input: { username: 'string (required) — Instagram username (in URL path)' },
-      output: {
-        profile: 'InstagramProfile',
-        posts: 'InstagramPost[]',
-        ai_analysis: '{ account_type, content_themes, sentiment, authenticity, images_analyzed, model_used, recommendations }',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, IG_ANALYZE_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!checkProxyRateLimit(clientIp)) {
-    c.header('Retry-After', '60');
-    return c.json({ error: 'Proxy rate limit exceeded. Max 20 requests/min to protect proxy quota.', retryAfter: 60 }, 429);
-  }
-
-  const username = c.req.param('username');
-  if (!username) return c.json({ error: 'Missing username in URL path' }, 400);
-
-  try {
-    const proxy = getProxy();
-    const result = await analyzeProfile(username);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      ...result,
-      meta: { proxy: { country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Instagram analysis failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ─── GET /api/instagram/analyze/:username/images ────
-
-serviceRouter.get('/instagram/analyze/:username/images', async (c) => {
-  const walletAddress = process.env.WALLET_ADDRESS;
-  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/instagram/analyze/:username/images', 'AI vision analysis of Instagram images only: content themes, style, aesthetic consistency, brand safety', IG_IMAGES_PRICE, walletAddress, {
-      input: { username: 'string (required) — Instagram username (in URL path)' },
-      output: {
-        images_analyzed: 'number',
-        analysis: '{ account_type, content_themes, sentiment, authenticity, recommendations, model_used }',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, IG_IMAGES_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!checkProxyRateLimit(clientIp)) {
-    c.header('Retry-After', '60');
-    return c.json({ error: 'Proxy rate limit exceeded. Max 20 requests/min to protect proxy quota.', retryAfter: 60 }, 429);
-  }
-
-  const username = c.req.param('username');
-  if (!username) return c.json({ error: 'Missing username in URL path' }, 400);
-
-  try {
-    const proxy = getProxy();
-    const result = await analyzeImages(username);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      ...result,
-      meta: { username, proxy: { country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Instagram image analysis failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ─── GET /api/instagram/audit/:username ─────────────
-
-serviceRouter.get('/instagram/audit/:username', async (c) => {
-  const walletAddress = process.env.WALLET_ADDRESS;
-  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/instagram/audit/:username', 'Instagram authenticity audit: fake follower detection, engagement pattern analysis, bot signals', IG_AUDIT_PRICE, walletAddress, {
-      input: { username: 'string (required) — Instagram username (in URL path)' },
-      output: {
-        profile: 'InstagramProfile',
-        authenticity: '{ score, verdict, face_consistency, engagement_pattern, follower_quality, comment_analysis, fake_signals }',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, IG_AUDIT_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const clientIp = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (!checkProxyRateLimit(clientIp)) {
-    c.header('Retry-After', '60');
-    return c.json({ error: 'Proxy rate limit exceeded. Max 20 requests/min to protect proxy quota.', retryAfter: 60 }, 429);
-  }
-
-  const username = c.req.param('username');
-  if (!username) return c.json({ error: 'Missing username in URL path' }, 400);
-
-  try {
-    const proxy = getProxy();
-    const result = await auditProfile(username);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      ...result,
-      meta: { proxy: { country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Instagram audit failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ═══════════════════════════════════════════════════════
-// ─── AIRBNB MARKET INTELLIGENCE API (Bounty #78) ────
-// ═══════════════════════════════════════════════════════
-
-const AIRBNB_SEARCH_PRICE = 0.02;
-const AIRBNB_LISTING_PRICE = 0.01;
-const AIRBNB_REVIEWS_PRICE = 0.01;
-const AIRBNB_MARKET_STATS_PRICE = 0.05;
-
-// ─── GET /api/airbnb/search ─────────────────────────
-
-serviceRouter.get('/airbnb/search', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/airbnb/search', 'Search Airbnb listings by location, dates, guests. Returns pricing, ratings, host info.', AIRBNB_SEARCH_PRICE, walletAddress, {
-      input: {
-        location: 'string (required) — city or area',
-        checkin: 'string (optional) — YYYY-MM-DD',
-        checkout: 'string (optional) — YYYY-MM-DD',
-        guests: 'number (optional, default: 1)',
-        limit: 'number (optional, default: 20, max: 50)',
-      },
-      output: {
-        listings: 'AirbnbListing[] — id, name, price, rating, reviewCount, host, roomType, amenities, coordinates',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, AIRBNB_SEARCH_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const location = c.req.query('location');
-  if (!location) return c.json({ error: 'Missing required parameter: location' }, 400);
-
-  const checkin = c.req.query('checkin') || undefined;
-  const checkout = c.req.query('checkout') || undefined;
-  const guests = parseInt(c.req.query('guests') || '1') || 1;
+  const handle = c.req.param('handle');
+  if (!handle) return c.json({ error: 'Missing handle in URL path' }, 400);
   const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '20') || 20, 1), 50);
 
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const results = await searchAirbnb(location, checkin, checkout, guests, limit);
+    const tweets = await getUserTweets(handle, limit, proxyFetch);
 
     c.header('X-Payment-Settled', 'true');
     c.header('X-Payment-TxHash', payment.txHash);
 
     return c.json({
-      listings: results,
-      meta: { location, checkin, checkout, guests, count: results.length, proxy: { ip, country: proxy.country, type: 'mobile' } },
+      handle,
+      tweets,
+      meta: {
+        total_tweets: tweets.length,
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+      },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
-    return c.json({ error: 'Airbnb search failed', message: err?.message || String(err) }, 502);
+    return c.json({ error: 'Tweets fetch failed', message: err?.message || String(err) }, 502);
   }
 });
 
-// ─── GET /api/airbnb/listing/:id ────────────────────
+// ─── GET /api/x/thread/:tweet_id ────────────────────
 
-serviceRouter.get('/airbnb/listing/:id', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
+serviceRouter.get('/x/thread/:tweet_id', async (c) => {
   const payment = extractPayment(c);
   if (!payment) {
-    return c.json(build402Response('/api/airbnb/listing/:id', 'Get detailed Airbnb listing: host, amenities, pricing calendar, location.', AIRBNB_LISTING_PRICE, walletAddress, {
-      input: { id: 'string (required) — Airbnb listing ID (in URL path)' },
-      output: {
-        listing: 'AirbnbListingDetail — id, name, description, price, rating, host, amenities, photos, location, houseRules',
+    return c.json(build402Response(
+      '/api/x/thread/:tweet_id',
+      'Extract full conversation thread from a tweet ID.',
+      0.02,
+      WALLET_ADDRESS,
+      {
+        input: { tweet_id: 'string (required, in URL path) — numeric tweet/post ID' },
+        output: { tweet_id: 'string', thread: 'ThreadTweet[] — { id, author, text, created_at, likes, retweets, replies }' },
       },
-    }), 402);
+    ), 402);
   }
 
-  const verification = await verifyPayment(payment, walletAddress, AIRBNB_LISTING_PRICE);
+  const verification = await verifyPayment(payment, WALLET_ADDRESS, 0.02);
   if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
 
-  const listingId = c.req.param('id');
-  if (!listingId) return c.json({ error: 'Missing listing ID' }, 400);
+  const tweetId = c.req.param('tweet_id');
+  if (!tweetId) return c.json({ error: 'Missing tweet_id in URL path' }, 400);
 
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const listing = await getListingDetail(listingId);
+    const thread = await getThread(tweetId, proxyFetch);
 
     c.header('X-Payment-Settled', 'true');
     c.header('X-Payment-TxHash', payment.txHash);
 
     return c.json({
-      listing,
-      meta: { proxy: { ip, country: proxy.country, type: 'mobile' } },
+      tweet_id: tweetId,
+      thread,
+      meta: {
+        thread_length: thread.length,
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+      },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
-    return c.json({ error: 'Airbnb listing fetch failed', message: err?.message || String(err) }, 502);
+    return c.json({ error: 'Thread extraction failed', message: err?.message || String(err) }, 502);
   }
 });
 
-// ─── GET /api/airbnb/reviews/:listing_id ────────────
-
-serviceRouter.get('/airbnb/reviews/:listing_id', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/airbnb/reviews/:listing_id', 'Get Airbnb listing reviews with ratings and author info.', AIRBNB_REVIEWS_PRICE, walletAddress, {
-      input: {
-        listing_id: 'string (required) — Airbnb listing ID (in URL path)',
-        limit: 'number (optional, default: 20, max: 50)',
-      },
-      output: {
-        reviews: 'AirbnbReview[] — id, author, rating, text, date, response',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, AIRBNB_REVIEWS_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const listingId = c.req.param('listing_id');
-  if (!listingId) return c.json({ error: 'Missing listing ID' }, 400);
-
-  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '20') || 20, 1), 50);
-
-  try {
-    const proxy = getProxy();
-    const ip = await getProxyExitIp();
-    const reviews = await getListingReviews(listingId, limit);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      reviews,
-      meta: { listingId, count: reviews.length, proxy: { ip, country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Airbnb reviews fetch failed', message: err?.message || String(err) }, 502);
-  }
-});
-
-// ─── GET /api/airbnb/market-stats ───────────────────
-
-serviceRouter.get('/airbnb/market-stats', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
-
-  const payment = extractPayment(c);
-  if (!payment) {
-    return c.json(build402Response('/api/airbnb/market-stats', 'Airbnb market statistics: average daily rate, price distribution, superhost percentage for an area.', AIRBNB_MARKET_STATS_PRICE, walletAddress, {
-      input: {
-        location: 'string (required) — city or area',
-        checkin: 'string (optional) — YYYY-MM-DD',
-        checkout: 'string (optional) — YYYY-MM-DD',
-      },
-      output: {
-        stats: '{ averageDailyRate, medianPrice, priceDistribution, superhostPercentage, totalListings, averageRating }',
-      },
-    }), 402);
-  }
-
-  const verification = await verifyPayment(payment, walletAddress, AIRBNB_MARKET_STATS_PRICE);
-  if (!verification.valid) return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
-
-  const location = c.req.query('location');
-  if (!location) return c.json({ error: 'Missing required parameter: location' }, 400);
-
-  const checkin = c.req.query('checkin') || undefined;
-  const checkout = c.req.query('checkout') || undefined;
-
-  try {
-    const proxy = getProxy();
-    const ip = await getProxyExitIp();
-    const stats = await getMarketStats(location, checkin, checkout);
-
-    c.header('X-Payment-Settled', 'true');
-    c.header('X-Payment-TxHash', payment.txHash);
-
-    return c.json({
-      stats,
-      meta: { location, proxy: { ip, country: proxy.country, type: 'mobile' } },
-      payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
-    });
-  } catch (err: any) {
-    return c.json({ error: 'Airbnb market stats failed', message: err?.message || String(err) }, 502);
-  }
-});
