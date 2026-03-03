@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "source": "airbnb.com",
+    "endpoint": "https://www.airbnb.com/api/v2/pdp_listing_details",
+    "proxyType": "US mobile residential (T-Mobile carrier IP)",
+    "collectedAt": "2026-02-26T14:22:07Z",
+    "apiEndpoint": "GET /api/airbnb/listing/:id",
+    "listingId": "45678901"
+  },
+  "listing": {
+    "id": "45678901",
+    "name": "Stunning South Beach Studio — Steps from the Ocean",
+    "type": "Entire studio",
+    "price": {
+      "perNight": 142,
+      "currency": "USD",
+      "weeklyDiscount": "10%",
+      "cleaningFee": 65
+    },
+    "rating": 4.92,
+    "reviewCount": 214,
+    "superhost": true,
+    "host": {
+      "id": "8823341",
+      "name": "Maria",
+      "isSuperhost": true,
+      "responseRate": "100%",
+      "responseTime": "within an hour",
+      "memberSince": "2017",
+      "totalReviews": 1042
+    },
+    "location": {
+      "city": "Miami Beach",
+      "neighborhood": "South Beach",
+      "lat": 25.7825,
+      "lng": -80.1304,
+      "exactLocationHidden": true
+    },
+    "capacity": {
+      "guests": 2,
+      "bedrooms": 0,
+      "beds": 1,
+      "bathrooms": 1
+    },
+    "amenities": [
+      "Wifi", "Air conditioning", "Kitchen", "Washer", "Dryer",
+      "Pool", "Gym", "Elevator", "TV", "Long-term stays allowed"
+    ],
+    "images": [
+      "https://a0.muscache.com/im/pictures/45678901/photo1.jpg",
+      "https://a0.muscache.com/im/pictures/45678901/photo2.jpg"
+    ],
+    "url": "https://www.airbnb.com/rooms/45678901",
+    "instantBook": true,
+    "cancellationPolicy": "Moderate",
+    "houseRules": {
+      "checkIn": "3:00 PM",
+      "checkOut": "11:00 AM",
+      "smokingAllowed": false,
+      "petsAllowed": false,
+      "partiesAllowed": false
+    }
+  }
+}

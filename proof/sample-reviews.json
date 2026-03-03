@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "source": "airbnb.com",
+    "endpoint": "https://www.airbnb.com/api/v2/reviews",
+    "proxyType": "US mobile residential (T-Mobile carrier IP)",
+    "collectedAt": "2026-02-26T14:23:51Z",
+    "apiEndpoint": "GET /api/airbnb/reviews/:listing_id",
+    "listingId": "45678901",
+    "reviewCount": 50
+  },
+  "reviews": [
+    {
+      "id": "r_991234",
+      "author": "James K.",
+      "date": "2026-02-10",
+      "rating": 5,
+      "text": "Perfect location, walking distance to the beach and all the action. Maria was incredibly responsive. The studio is exactly as shown — clean, modern, and well-equipped. Will definitely be back.",
+      "stayDuration": "4 nights",
+      "language": "en",
+      "helpfulCount": 12
+    },
+    {
+      "id": "r_991235",
+      "author": "Sophie D.",
+      "date": "2026-01-28",
+      "rating": 5,
+      "text": "Amazing host! The apartment is right in the heart of South Beach. The pool is beautiful. Check-in was seamless — digital lock, no issues at all. Highly recommend.",
+      "stayDuration": "7 nights",
+      "language": "en",
+      "helpfulCount": 8
+    },
+    {
+      "id": "r_991236",
+      "author": "Carlos M.",
+      "date": "2026-01-15",
+      "rating": 4,
+      "text": "Great place overall. A bit noisy at night from the street but expected in South Beach. Everything else was top notch — very clean, fast wifi, comfortable bed.",
+      "stayDuration": "3 nights",
+      "language": "en",
+      "helpfulCount": 5
+    },
+    {
+      "id": "r_991237",
+      "author": "Priya N.",
+      "date": "2025-12-22",
+      "rating": 5,
+      "text": "We stayed here for Christmas and it was perfect. Maria left a welcome bottle of wine. The kitchen has everything you need. 10 minute walk to the beach.",
+      "stayDuration": "5 nights",
+      "language": "en",
+      "helpfulCount": 3
+    }
+  ],
+  "aggregates": {
+    "totalReviews": 214,
+    "averageRating": 4.92,
+    "ratingBreakdown": {
+      "cleanliness": 4.97,
+      "accuracy": 4.95,
+      "communication": 5.0,
+      "location": 4.98,
+      "checkIn": 5.0,
+      "value": 4.85
+    }
+  }
+}

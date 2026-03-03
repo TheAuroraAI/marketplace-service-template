@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "source": "airbnb.com",
+    "endpoint": "computed from /api/v2/explore_tabs (50 listings)",
+    "proxyType": "US mobile residential (T-Mobile carrier IP)",
+    "collectedAt": "2026-02-26T14:25:14Z",
+    "apiEndpoint": "GET /api/airbnb/market-stats",
+    "location": "Miami Beach, FL",
+    "checkIn": "2026-03-15",
+    "checkOut": "2026-03-17",
+    "guests": 2,
+    "sampleSize": 50
+  },
+  "marketStats": {
+    "averageDailyRate": 178.40,
+    "medianPrice": 155.00,
+    "minPrice": 62.00,
+    "maxPrice": 589.00,
+    "currency": "USD",
+    "priceDistribution": [
+      { "bucket": "$0-75",    "count": 4,  "percentage": 8.0  },
+      { "bucket": "$75-125",  "count": 12, "percentage": 24.0 },
+      { "bucket": "$125-175", "count": 16, "percentage": 32.0 },
+      { "bucket": "$175-250", "count": 11, "percentage": 22.0 },
+      { "bucket": "$250-350", "count": 5,  "percentage": 10.0 },
+      { "bucket": "$350+",    "count": 2,  "percentage": 4.0  }
+    ],
+    "propertyTypes": [
+      { "type": "Entire condo",          "count": 22, "percentage": 44.0 },
+      { "type": "Entire apartment",      "count": 14, "percentage": 28.0 },
+      { "type": "Entire studio",         "count": 9,  "percentage": 18.0 },
+      { "type": "Private room in condo", "count": 3,  "percentage": 6.0  },
+      { "type": "Other",                 "count": 2,  "percentage": 4.0  }
+    ],
+    "superhostPercentage": 62.0,
+    "averageRating": 4.81,
+    "averageReviewCount": 47,
+    "instantBookPercentage": 78.0,
+    "totalListings": 50,
+    "insight": "Miami Beach weekend (Mar 15-17) market shows $178 ADR, 62% superhosts, dominated by entire condos/apartments. $125-175 is the sweet spot (32% of inventory). Premium units ($350+) are scarce but available."
+  }
+}
