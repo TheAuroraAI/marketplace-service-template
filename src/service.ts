@@ -38,6 +38,7 @@ import { searchMarketplace, getListingDetail as fbGetListingDetail, getCategorie
 import { scrapeProperty, searchZillow, getComparableSales, getMarketStatsByZip } from './scrapers/zillow-scraper';
 import { searchReddit, getSubreddit, getTrending as redditGetTrending, getComments } from './scrapers/reddit-scraper';
 import { getSearchAds, getDisplayAds, getAdvertiserAds } from './scrapers/ad-verification-scraper';
+import { getMarketSignal, getArbitrageOpportunities, getSentimentAnalysis, getTrendingMarketsWithDivergence } from './scrapers/prediction-market-signal-scraper';
 
 export const serviceRouter = new Hono();
 
@@ -1506,5 +1507,103 @@ serviceRouter.get('/run', async (c) => {
     });
   } catch (err: any) {
     return c.json({ error: 'Ad verification failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// ─── PREDICTION MARKET SIGNAL AGGREGATOR (Bounty #55) ───
+
+const PREDICT_SIGNAL_PRICE = 0.05;
+const PREDICT_ARBITRAGE_PRICE = 0.03;
+const PREDICT_SENTIMENT_PRICE = 0.02;
+const PREDICT_TRENDING_PRICE = 0.02;
+
+// GET /api/prediction/signal?market=us-presidential-election-2028
+serviceRouter.get('/prediction/signal', async (c) => {
+  const payment = c.req.header('X-Payment-Tx') || c.req.header('Payment-Signature');
+  const walletAddress = getWallet();
+  if (!payment) {
+    return c.json(build402Response('/api/prediction/signal', 'Get prediction market signal: combined odds from Polymarket/Kalshi/Metaculus + social sentiment from Twitter/Reddit/TikTok via mobile proxy. Detects arbitrage spreads and sentiment divergence.', PREDICT_SIGNAL_PRICE, walletAddress, {
+      input: { market: 'string — market slug (e.g. bitcoin-etf-approval, us-presidential-election-2028)' },
+      output: { odds: { polymarket: 'object', kalshi: 'object', metaculus: 'object' }, sentiment: { twitter: 'object', reddit: 'object', tiktok: 'object' }, signals: { arbitrage: 'object', sentimentDivergence: 'object', volumeSpike: 'object' } },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, PREDICT_SIGNAL_PRICE);
+  if (!verification.valid) return c.json({ error: 'Invalid or insufficient payment', details: verification }, 402);
+  const market = c.req.query('market');
+  if (!market) return c.json({ error: 'Missing required query param: market', example: '/api/prediction/signal?market=bitcoin-etf-approval' }, 400);
+  try {
+    const result = await getMarketSignal(market);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment);
+    return c.json({ ...result, payment: { txHash: payment, network: 'base', amount: verification.amount, verified: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Prediction market signal failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// GET /api/prediction/arbitrage
+serviceRouter.get('/prediction/arbitrage', async (c) => {
+  const payment = c.req.header('X-Payment-Tx') || c.req.header('Payment-Signature');
+  const walletAddress = getWallet();
+  if (!payment) {
+    return c.json(build402Response('/api/prediction/arbitrage', 'Get all active arbitrage opportunities across Polymarket and Kalshi. Returns top 10 spreads ranked by profit potential.', PREDICT_ARBITRAGE_PRICE, walletAddress, {
+      output: { opportunities: 'ArbitrageSignal[]', count: 'number', topSpread: 'number' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, PREDICT_ARBITRAGE_PRICE);
+  if (!verification.valid) return c.json({ error: 'Invalid or insufficient payment', details: verification }, 402);
+  try {
+    const result = await getArbitrageOpportunities();
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment);
+    return c.json({ ...result, payment: { txHash: payment, network: 'base', amount: verification.amount, verified: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Arbitrage scan failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// GET /api/prediction/sentiment?topic=bitcoin+etf&country=US
+serviceRouter.get('/prediction/sentiment', async (c) => {
+  const payment = c.req.header('X-Payment-Tx') || c.req.header('Payment-Signature');
+  const walletAddress = getWallet();
+  if (!payment) {
+    return c.json(build402Response('/api/prediction/sentiment', 'Sentiment analysis for any prediction market topic from Twitter/X, Reddit, and TikTok via mobile proxies.', PREDICT_SENTIMENT_PRICE, walletAddress, {
+      input: { topic: 'string (required)', country: 'string (optional, default: US)' },
+      output: { twitter: 'object', reddit: 'object', tiktok: 'object', overall: 'object' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, PREDICT_SENTIMENT_PRICE);
+  if (!verification.valid) return c.json({ error: 'Invalid or insufficient payment', details: verification }, 402);
+  const topic = c.req.query('topic');
+  if (!topic) return c.json({ error: 'Missing required query param: topic', example: '/api/prediction/sentiment?topic=bitcoin+etf&country=US' }, 400);
+  const country = c.req.query('country') || 'US';
+  try {
+    const result = await getSentimentAnalysis(topic, country);
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment);
+    return c.json({ ...result, payment: { txHash: payment, network: 'base', amount: verification.amount, verified: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Sentiment analysis failed', message: err?.message || String(err) }, 502);
+  }
+});
+
+// GET /api/prediction/trending
+serviceRouter.get('/prediction/trending', async (c) => {
+  const payment = c.req.header('X-Payment-Tx') || c.req.header('Payment-Signature');
+  const walletAddress = getWallet();
+  if (!payment) {
+    return c.json(build402Response('/api/prediction/trending', 'Trending prediction markets with sentiment divergence scores. Identifies markets where social sentiment disagrees with on-chain odds.', PREDICT_TRENDING_PRICE, walletAddress, {
+      output: { markets: 'TrendingResult[]', topDivergence: 'object' },
+    }), 402);
+  }
+  const verification = await verifyPayment(payment, walletAddress, PREDICT_TRENDING_PRICE);
+  if (!verification.valid) return c.json({ error: 'Invalid or insufficient payment', details: verification }, 402);
+  try {
+    const result = await getTrendingMarketsWithDivergence();
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment);
+    return c.json({ ...result, payment: { txHash: payment, network: 'base', amount: verification.amount, verified: true } });
+  } catch (err: any) {
+    return c.json({ error: 'Trending markets fetch failed', message: err?.message || String(err) }, 502);
   }
 });
