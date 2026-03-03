@@ -3,7 +3,7 @@
   "name": "Instagram Intelligence + AI Vision Analysis API",
   "description": "Scrape Instagram profiles and posts via mobile proxy, with AI-powered vision analysis for account type detection, content themes, sentiment, authenticity scoring, and brand safety recommendations.",
   "longDescription": "Full Instagram intelligence pipeline: scrape profiles and posts through mobile proxies, then analyze with AI vision (GPT-4o/Claude). Detect account types, content themes, sentiment, authenticity scores, and brand safety. Essential for influencer marketing, competitive analysis, and brand monitoring.",
-  "endpoint": "https://marketplace-api-9kvb.onrender.com/api",
+  "endpoint": "https://instagram-intelligence-api-8gv6.onrender.com/api",
   "docsUrl": "https://github.com/TheAuroraAI/marketplace-service-template/tree/bounty-71-instagram-intelligence",
   "pricing": {
     "model": "per-request",
@@ -44,11 +44,11 @@
   "featured": false,
   "addedAt": "2026-02-18",
   "x402": {
-    "discoveryUrl": "https://marketplace-api-9kvb.onrender.com/api/instagram/profile/instagram",
-    "wellKnown": "https://marketplace-api-9kvb.onrender.com/.well-known/x402.json"
+    "discoveryUrl": "https://instagram-intelligence-api-8gv6.onrender.com/api/instagram/profile/instagram",
+    "wellKnown": "https://instagram-intelligence-api-8gv6.onrender.com/.well-known/x402.json"
   },
   "lastVerified": "2026-02-19T00:00:00Z",
-  "healthEndpoint": "https://marketplace-api-9kvb.onrender.com/health",
+  "healthEndpoint": "https://instagram-intelligence-api-8gv6.onrender.com/health",
   "whyMobileProxy": "Instagram aggressively blocks non-residential IPs and requires authenticated sessions for most data. Mobile carrier IPs (4G/5G) mimic real Instagram app traffic, bypassing rate limits and login walls that block datacenter and residential proxies. This is the only reliable method for programmatic Instagram data extraction at scale.",
   "outputSchema": {
     "profile": {
