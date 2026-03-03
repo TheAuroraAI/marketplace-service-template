@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-02T14:58:06.846011+00:00",
+  "generated_at": "2026-03-03T01:34:10Z",
   "purpose": "Live API proof for Prediction Market Signal Aggregator (Bounty #55)",
   "apis_tested": {
     "polymarket": {
@@ -85,6 +85,64 @@
           "volume24h": 0
         }
       ]
+    },
+    "reddit_polymarket": {
+      "status": 200,
+      "endpoint": "https://www.reddit.com/r/Polymarket/top.json",
+      "via_proxy": true,
+      "proxy_ip": "172.56.168.236",
+      "post_count": 8,
+      "top_posts": [
+        {
+          "title": "Buying \"Yes\" on the Iran regime collapse is pure emotional trading.",
+          "score": 3,
+          "url": "https://www.reddit.com/r/Polymarket/comments/1rj2haw/buying_yes_on_the_iran_regime_collapse_is_pure/"
+        },
+        {
+          "title": "Bear case for Silver hitting $150/$170 by June 2026",
+          "score": 3,
+          "url": "https://www.reddit.com/r/Polymarket/comments/1rj1ja0/bear_case_for_silver_hitting_150170_by_june_2026/"
+        },
+        {
+          "title": "Has anyone found a consistent edge on Polymarket, or is it mostly news timing?",
+          "score": 2,
+          "url": "https://www.reddit.com/r/Polymarket/comments/1ref19e/has_anyone_found_a_consistent_edge_on_polymarket/"
+        },
+        {
+          "title": "Polymarket or Sports Betting Sites. Which Would You Choose?\ud83e\udd1f\ud83c\udffc",
+          "score": 1,
+          "url": "https://www.reddit.com/r/Polymarket/comments/1rj66xw/polymarket_or_sports_betting_sites_which_would/"
+        }
+      ]
+    },
+    "reddit_crypto_sentiment": {
+      "status": 200,
+      "endpoint": "https://www.reddit.com/r/CryptoCurrency/search.json?q=prediction+market+odds",
+      "via_proxy": true,
+      "proxy_ip": "172.56.168.236",
+      "post_count": 8,
+      "top_posts": [
+        {
+          "title": "Ethereum turns 10 this year. Here are some of the wildest experiments from its first 18 months that most people have forgotten.",
+          "score": 28,
+          "url": "https://www.reddit.com/r/CryptoCurrency/comments/1ritmnj/ethereum_turns_10_this_year_here_are_some_of_the/"
+        },
+        {
+          "title": "ZachXBT announces Axiom Exchange as the culprit of his insider trading investigation",
+          "score": 14,
+          "url": "https://www.reddit.com/r/CryptoCurrency/comments/1rfaxvt/zachxbt_announces_axiom_exchange_as_the_culprit/"
+        },
+        {
+          "title": "Moral Questions Around Prediction Markets and Betting on Wars",
+          "score": 10,
+          "url": "https://www.reddit.com/r/CryptoCurrency/comments/1rh13hn/moral_questions_around_prediction_markets_and/"
+        },
+        {
+          "title": "Now You Can Buy Tokenized Stocks on Binance Exchange and Take Self Custody",
+          "score": 0,
+          "url": "https://www.reddit.com/r/CryptoCurrency/comments/1riu56j/now_you_can_buy_tokenized_stocks_on_binance/"
+        }
+      ]
     }
   },
   "sample_signal": {
@@ -127,5 +185,13 @@
         "detected": true
       }
     }
+  },
+  "proxy": {
+    "ip": "172.56.168.236",
+    "server": "99.87.225.2:8109",
+    "provider": "Proxies.sx US Mobile Residential (T-Mobile)",
+    "tx_hash": "0xbdb9a2d9dbd48c8db1a7d5d31f08c8ffb0d9664869db378e4e9a2838e9d1976c",
+    "tx_url": "https://basescan.org/tx/0xbdb9a2d9dbd48c8db1a7d5d31f08c8ffb0d9664869db378e4e9a2838e9d1976c",
+    "collected_at": "2026-03-03T01:34:10Z"
   }
 }
