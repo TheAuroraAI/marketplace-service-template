@@ -1,0 +1,23 @@
+{
+  "proxyPurchase": {
+    "txHash": "0xc41c873b12ef3e2dc0769b356a16d67624ffaccc688f6482fac2f4e3a56052ef",
+    "network": "base",
+    "amountUSDC": 0.4,
+    "walletAddress": "0xc0140eea19bd90a7ca75882d5218efaf20426e42",
+    "verifyUrl": "https://basescan.org/tx/0xc41c873b12ef3e2dc0769b356a16d67624ffaccc688f6482fac2f4e3a56052ef"
+  },
+  "proxyDetails": {
+    "provider": "Proxies.sx",
+    "exitIp": "172.56.168.236",
+    "carrier": "T-Mobile US",
+    "type": "mobile",
+    "country": "US"
+  },
+  "connectionTest": {
+    "testUrl": "https://api.twitter.com/2/tweets/search/recent",
+    "statusCode": 200,
+    "dataExtracted": "Tweets with engagement metrics via Twitter v2 API + Syndication API",
+    "timestamp": "2026-03-02T10:38:00Z"
+  },
+  "notes": "US mobile proxy used to bypass IP-based rate limits on Twitter search APIs"
+}
