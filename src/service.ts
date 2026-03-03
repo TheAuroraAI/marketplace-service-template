@@ -81,7 +81,7 @@ setInterval(() => {
   }
 }, 300_000);
 
-const SOLANA_WALLET = '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv';
+const SOLANA_WALLET = 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
 
 function getWallet(): string {
   return process.env.SOLANA_WALLET_ADDRESS || SOLANA_WALLET;

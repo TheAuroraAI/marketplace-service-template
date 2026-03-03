@@ -113,8 +113,8 @@ app.get('/', (c) => c.json({
     currency: 'USDC',
     range: '$0.005 — $0.05 per request',
     networks: [
-      { network: 'base', chainId: 'eip155:8453', recipient: '0xF8cD900794245fc36CBE65be9afc23CDF5103042', asset: 'USDC' },
-      { network: 'solana', chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', recipient: '6eUdVwsPArTxwVqEARYGCh4S2qwW2zCs7jSEDRpxydnv', asset: 'USDC' },
+      { network: 'base', chainId: 'eip155:8453', recipient: '0xC0140eEa19bD90a7cA75882d5218eFaF20426e42', asset: 'USDC' },
+      { network: 'solana', chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', recipient: 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH', asset: 'USDC' },
     ],
   },
   links: {
