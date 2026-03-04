@@ -1,0 +1,82 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/discover",
+    "collected_at": "2026-03-03T09:31:22Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "query": {
+    "niche": "fitness",
+    "min_followers": 10000,
+    "max_followers": 500000,
+    "min_engagement_rate": 2.0
+  },
+  "discovered_accounts": [
+    {
+      "username": "coachsara_fit",
+      "full_name": "Sara Mitchell | Fitness Coach",
+      "followers": 142830,
+      "engagement_rate": 3.87,
+      "avg_likes": 5423,
+      "is_verified": false,
+      "is_business": true,
+      "category": "Health/Beauty",
+      "niche_match_score": 0.94,
+      "top_hashtags": ["fitness", "workout", "hiit", "womenswholift", "fitnessmotivation"]
+    },
+    {
+      "username": "mindfulmovement_dan",
+      "full_name": "Dan Torres | Mindful Movement",
+      "followers": 87542,
+      "engagement_rate": 4.21,
+      "avg_likes": 3589,
+      "is_verified": false,
+      "is_business": false,
+      "category": null,
+      "niche_match_score": 0.89,
+      "top_hashtags": ["yoga", "mindfulness", "fitness", "wellness", "mobility"]
+    },
+    {
+      "username": "strengthlab_jess",
+      "full_name": "Jessica Park | Strength & Performance",
+      "followers": 234178,
+      "engagement_rate": 2.63,
+      "avg_likes": 5831,
+      "is_verified": true,
+      "is_business": true,
+      "category": "Sports",
+      "niche_match_score": 0.91,
+      "top_hashtags": ["powerlifting", "strengthtraining", "gym", "fitness", "femaleathlete"]
+    },
+    {
+      "username": "run_with_maya",
+      "full_name": "Maya Johnson | Ultra Runner",
+      "followers": 68923,
+      "engagement_rate": 5.14,
+      "avg_likes": 3421,
+      "is_verified": false,
+      "is_business": false,
+      "category": null,
+      "niche_match_score": 0.82,
+      "top_hashtags": ["running", "ultramarathon", "trailrunning", "fitness", "runnersofinstagram"]
+    }
+  ],
+  "total_found": 4,
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 1.0,
+    "settled": true
+  }
+}

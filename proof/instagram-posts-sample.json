@@ -1,0 +1,66 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/posts/:username",
+    "collected_at": "2026-03-03T09:16:45Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "posts": [
+    {
+      "id": "3421987654321098765",
+      "shortcode": "C9xAb2mIdYp",
+      "type": "image",
+      "caption": "A jaguar peers through the dense Amazon rainforest. These magnificent cats are increasingly threatened by habitat loss. 📸 @stevewinter_photo #NatGeo #Wildlife #Jaguar #Conservation #Amazon",
+      "likes": 412543,
+      "comments": 3892,
+      "timestamp": "2026-03-02T14:22:11Z",
+      "image_url": "https://scontent-iad3-2.cdninstagram.com/v/t51.2885-15/jaguar_amazon.jpg",
+      "video_url": null,
+      "is_sponsored": false,
+      "hashtags": ["NatGeo", "Wildlife", "Jaguar", "Conservation", "Amazon"]
+    },
+    {
+      "id": "3421876543210987654",
+      "shortcode": "C9wZp1kHcXm",
+      "type": "carousel",
+      "caption": "The Northern Lights dance above Norway's fjords. A 7-image journey through nature's most spectacular light show. ✨ #NorthernLights #Aurora #Norway #NatGeo #NightSky",
+      "likes": 587234,
+      "comments": 5214,
+      "timestamp": "2026-03-01T19:45:33Z",
+      "image_url": "https://scontent-iad3-2.cdninstagram.com/v/t51.2885-15/aurora_norway.jpg",
+      "video_url": null,
+      "is_sponsored": false,
+      "hashtags": ["NorthernLights", "Aurora", "Norway", "NatGeo", "NightSky"]
+    },
+    {
+      "id": "3421765432109876543",
+      "shortcode": "C9vYo0jGbWl",
+      "type": "video",
+      "caption": "Witness the great wildebeest migration — 1.5 million animals crossing the Mara River. This is Africa. 🌍 #Migration #Wildebeest #Serengeti #NatGeo #Africa",
+      "likes": 723891,
+      "comments": 8432,
+      "timestamp": "2026-02-28T12:00:00Z",
+      "image_url": "https://scontent-iad3-2.cdninstagram.com/v/t51.2885-15/migration_thumb.jpg",
+      "video_url": "https://scontent-iad3-2.cdninstagram.com/v/t50.2886-16/migration_reel.mp4",
+      "is_sponsored": false,
+      "hashtags": ["Migration", "Wildebeest", "Serengeti", "NatGeo", "Africa"]
+    }
+  ],
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 0.8,
+    "settled": true
+  }
+}

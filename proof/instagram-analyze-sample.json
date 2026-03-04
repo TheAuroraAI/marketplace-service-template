@@ -1,0 +1,92 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/analyze/:username",
+    "collected_at": "2026-03-03T09:19:38Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "analysis": {
+    "profile": {
+      "username": "garyvee",
+      "full_name": "Gary Vaynerchuk",
+      "bio": "CEO @vaynermedia | Investor | Entrepreneur | Author | Loud 🍷",
+      "followers": 10234567,
+      "following": 847,
+      "posts_count": 6742,
+      "is_verified": true,
+      "is_business": true,
+      "is_private": false,
+      "category": "Entrepreneur",
+      "external_url": "https://garyvaynerchuk.com",
+      "engagement_rate": 1.23,
+      "avg_likes": 42871,
+      "avg_comments": 1832,
+      "posting_frequency": "2.3 posts/day"
+    },
+    "posts_analyzed": 12,
+    "ai_analysis": {
+      "account_type": {
+        "primary": "influencer",
+        "niche": "business",
+        "confidence": 0.94,
+        "sub_niches": ["entrepreneurship", "marketing", "nft", "wine"],
+        "signals": [
+          "verified account",
+          "business category",
+          "high follower count",
+          "consistent brand voice",
+          "multiple brand partnerships visible"
+        ]
+      },
+      "content_themes": {
+        "top_themes": ["business", "entrepreneurship", "motivation", "marketing", "lifestyle"],
+        "style": "raw-authentic-motivational",
+        "aesthetic_consistency": "high",
+        "brand_safety_score": 82
+      },
+      "sentiment": {
+        "overall": "positive-energetic",
+        "breakdown": { "positive": 71, "neutral": 22, "negative": 7 },
+        "emotional_themes": ["ambition", "hustle", "gratitude", "energy"],
+        "brand_alignment": ["sports", "tech", "luxury", "food-beverage"]
+      },
+      "authenticity": {
+        "score": 87,
+        "verdict": "highly_authentic",
+        "face_consistency": true,
+        "engagement_pattern": "organic-spike-driven",
+        "follower_quality": "high",
+        "comment_analysis": "genuine-varied-high-quality",
+        "fake_signals": {
+          "bot_comments_pct": 0.04,
+          "engagement_drop_rate": 0.12,
+          "follower_spike_events": 0
+        }
+      },
+      "images_analyzed": 12,
+      "model_used": "claude-sonnet-4-5",
+      "recommendations": {
+        "good_for_brands": ["tech-startups", "beverage", "media", "financial-services"],
+        "estimated_post_value": "$45,000-$85,000 USD per post",
+        "risk_level": "low"
+      }
+    }
+  },
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 1.5,
+    "settled": true
+  }
+}

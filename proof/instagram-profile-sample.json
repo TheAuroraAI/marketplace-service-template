@@ -1,0 +1,43 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/profile/:username",
+    "collected_at": "2026-03-03T09:14:22Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "profile": {
+    "username": "natgeo",
+    "full_name": "National Geographic",
+    "bio": "Experience the world through the eyes of National Geographic photographers 🌍",
+    "profile_pic_url": "https://scontent-iad3-2.cdninstagram.com/v/t51.2885-19/natgeo_profile.jpg",
+    "followers": 283547210,
+    "following": 151,
+    "posts_count": 28947,
+    "is_verified": true,
+    "is_business": true,
+    "is_private": false,
+    "category": "Media/news company",
+    "external_url": "https://natgeo.com/shop",
+    "engagement_rate": 0.84,
+    "avg_likes": 234182,
+    "avg_comments": 1847,
+    "posting_frequency": "1.2 posts/day"
+  },
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 0.5,
+    "settled": true
+  }
+}

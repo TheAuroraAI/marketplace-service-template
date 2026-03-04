@@ -1,0 +1,72 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/audit/:username",
+    "collected_at": "2026-03-03T09:27:44Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "profile": {
+    "username": "techinfluencer_example",
+    "full_name": "Alex Chen | Tech & AI",
+    "bio": "AI engineer & content creator. Helping devs build with LLMs 🤖 | 500K+ following",
+    "followers": 523847,
+    "following": 1243,
+    "posts_count": 847,
+    "is_verified": false,
+    "is_business": true,
+    "is_private": false,
+    "category": "Science & Technology",
+    "external_url": "https://alexchen.dev",
+    "engagement_rate": 2.14,
+    "avg_likes": 10283,
+    "avg_comments": 892,
+    "posting_frequency": "4.2 posts/week"
+  },
+  "authenticity": {
+    "score": 78,
+    "verdict": "likely_authentic",
+    "face_consistency": true,
+    "engagement_pattern": "organic-with-viral-spikes",
+    "follower_quality": "mixed-high",
+    "comment_analysis": "mostly-genuine-some-generic",
+    "fake_signals": {
+      "bot_comments_pct": 0.09,
+      "engagement_drop_rate": 0.18,
+      "follower_spike_events": 2,
+      "suspicious_follower_accounts": 0.06,
+      "comment_pod_detected": false,
+      "engagement_velocity_anomalies": 1
+    }
+  },
+  "audit_summary": {
+    "overall_risk": "low-medium",
+    "recommended_for_campaigns": true,
+    "concerns": [
+      "2 follower spike events detected (possible purchased followers ~8mo ago)",
+      "9% bot comment rate (within acceptable range)"
+    ],
+    "strengths": [
+      "Face consistency confirmed across all posts",
+      "Engagement rate 2.14% (above 1% tech niche benchmark)",
+      "Comment quality high — technical discussions, genuine questions",
+      "Content consistency: AI/ML topics represent 87% of posts"
+    ]
+  },
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 2.0,
+    "settled": true
+  }
+}

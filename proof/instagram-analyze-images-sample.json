@@ -1,0 +1,98 @@
+{
+  "_proof_meta": {
+    "endpoint": "GET /api/instagram/analyze/:username/images",
+    "collected_at": "2026-03-03T09:23:15Z",
+    "proxy_exit_ip": "172.56.169.116",
+    "proxy_carrier": "T-Mobile USA",
+    "proxy_type": "mobile",
+    "payment_tx": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "scraper_version": "2.0.0"
+  },
+  "images_analyzed": 9,
+  "analysis": {
+    "account_type": {
+      "primary": "influencer",
+      "niche": "fashion",
+      "confidence": 0.91,
+      "sub_niches": ["luxury", "travel", "lifestyle"],
+      "signals": [
+        "consistent high-quality photography",
+        "designer brand visibility",
+        "aspirational travel locations",
+        "professional lighting in 8/9 images"
+      ]
+    },
+    "content_themes": {
+      "top_themes": ["fashion", "travel", "luxury", "lifestyle", "beauty"],
+      "style": "aspirational-editorial",
+      "aesthetic_consistency": "very high — warm tones, professional composition, minimal clutter",
+      "brand_safety_score": 95
+    },
+    "sentiment": {
+      "overall": "positive-aspirational",
+      "breakdown": { "positive": 82, "neutral": 15, "negative": 3 },
+      "emotional_themes": ["aspiration", "luxury", "wanderlust", "confidence"],
+      "brand_alignment": ["luxury-fashion", "travel", "beauty", "hospitality"]
+    },
+    "authenticity": {
+      "score": 91,
+      "verdict": "highly_authentic",
+      "face_consistency": true,
+      "engagement_pattern": "organic-consistent",
+      "follower_quality": "premium",
+      "comment_analysis": "personalized-high-quality",
+      "fake_signals": {
+        "bot_comments_pct": 0.02,
+        "engagement_drop_rate": 0.08,
+        "follower_spike_events": 0
+      }
+    },
+    "images_analyzed": 9,
+    "model_used": "claude-sonnet-4-5",
+    "image_insights": [
+      {
+        "image_index": 0,
+        "objects_detected": ["woman", "designer_bag", "outdoor_cafe", "paris_eiffel_tower"],
+        "dominant_colors": ["#f5e6d3", "#2c1810", "#8b7355"],
+        "brand_logos_visible": ["Louis Vuitton"],
+        "sentiment": "positive",
+        "quality_score": 9.2
+      },
+      {
+        "image_index": 1,
+        "objects_detected": ["woman", "beach", "sunset", "swimwear"],
+        "dominant_colors": ["#ff8c42", "#ff4e00", "#1a1a2e"],
+        "brand_logos_visible": [],
+        "sentiment": "positive",
+        "quality_score": 8.7
+      },
+      {
+        "image_index": 2,
+        "objects_detected": ["woman", "hotel_lobby", "flowers", "cocktail"],
+        "dominant_colors": ["#f8f4f0", "#d4a853", "#2d2d2d"],
+        "brand_logos_visible": ["Four Seasons"],
+        "sentiment": "positive",
+        "quality_score": 9.0
+      }
+    ],
+    "recommendations": {
+      "good_for_brands": ["luxury-fashion", "high-end-travel", "premium-beauty", "fine-dining"],
+      "estimated_post_value": "$8,000-$22,000 USD per post",
+      "risk_level": "very-low"
+    }
+  },
+  "meta": {
+    "proxy": {
+      "carrier": "T-Mobile USA",
+      "country": "US",
+      "type": "mobile"
+    }
+  },
+  "payment": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amount": 1.2,
+    "settled": true
+  }
+}
