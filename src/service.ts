@@ -92,6 +92,63 @@ async function getProxyExitIp(): Promise<string | null> {
 }
 
 serviceRouter.get('/run', async (c) => {
+  // Mobile Ad Verification & Creative Intelligence (Issue #53 spec: GET /api/run?type=search_ads|display_ads|advertiser)
+  const type = c.req.query('type');
+  if (type === 'search_ads' || type === 'display_ads' || type === 'advertiser') {
+    const adWallet = process.env.WALLET_ADDRESS || '';
+    const adPriceMap: Record<string, number> = { search_ads: 0.02, display_ads: 0.015, advertiser: 0.01 };
+    const adPrice = adPriceMap[type];
+    const adPayment = extractPayment(c);
+
+    if (!adPayment) {
+      return c.json(build402Response(`/api/run?type=${type}`, `Mobile Ad Verification — ${type}: see what ads appear from a real 4G/5G carrier device. Also accessible at /api/ads?type=${type}`, adPrice, adWallet, {
+        type: 'string — search_ads | display_ads | advertiser',
+        query: 'string — search query (search_ads only)',
+        url: 'string — target URL (display_ads only)',
+        domain: 'string — advertiser domain (advertiser only)',
+        country: 'string — country code: US, DE, FR, ES, GB, PL (default: US)',
+      }), 402);
+    }
+
+    const adVerification = await verifyPayment(adPayment, adWallet, adPrice);
+    if (!adVerification.valid) {
+      return c.json({ error: 'Payment verification failed', details: adVerification.error }, 402);
+    }
+
+    try {
+      const country = (c.req.query('country') || 'US').toUpperCase();
+      const validCountries = ['US', 'DE', 'FR', 'ES', 'GB', 'PL'];
+      if (!validCountries.includes(country)) {
+        return c.json({ error: `Invalid country. Supported: ${validCountries.join(', ')}` }, 400);
+      }
+
+      if (type === 'search_ads') {
+        const query = c.req.query('query');
+        if (!query) return c.json({ error: 'Missing required param: query', example: '/api/run?type=search_ads&query=best+vpn&country=US' }, 400);
+        const result = await fetchSearchAds(query, country);
+        c.header('X-Payment-Settled', 'true');
+        c.header('X-Payment-TxHash', adPayment.txHash);
+        return c.json({ ...result, payment: { txHash: adPayment.txHash, amount: adVerification.amount, verified: true } });
+      } else if (type === 'display_ads') {
+        const url = c.req.query('url');
+        if (!url) return c.json({ error: 'Missing required param: url', example: '/api/run?type=display_ads&url=https://techcrunch.com&country=DE' }, 400);
+        const result = await fetchDisplayAds(url, country);
+        c.header('X-Payment-Settled', 'true');
+        c.header('X-Payment-TxHash', adPayment.txHash);
+        return c.json({ ...result, payment: { txHash: adPayment.txHash, amount: adVerification.amount, verified: true } });
+      } else {
+        const domain = c.req.query('domain');
+        if (!domain) return c.json({ error: 'Missing required param: domain', example: '/api/run?type=advertiser&domain=nordvpn.com&country=US' }, 400);
+        const result = await fetchAdvertiserAds(domain, country);
+        c.header('X-Payment-Settled', 'true');
+        c.header('X-Payment-TxHash', adPayment.txHash);
+        return c.json({ ...result, payment: { txHash: adPayment.txHash, amount: adVerification.amount, verified: true } });
+      }
+    } catch (err: any) {
+      return c.json({ error: `Ad intelligence ${type} failed`, message: err?.message || String(err) }, 502);
+    }
+  }
+
   const walletAddress = process.env.WALLET_ADDRESS;
   if (!walletAddress) {
     return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
