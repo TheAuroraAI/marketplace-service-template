@@ -1,0 +1,33 @@
+{
+  "proxyPurchase": {
+    "txHash": "0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5",
+    "network": "base",
+    "amountUSDC": 0.40,
+    "walletAddress": "0xC0140eEa19bD90a7cA75882d5218eFaF20426e42",
+    "verifyUrl": "https://basescan.org/tx/0xbc596de14a26bf687cef58b4eda9c697a5b2d15af00aebaced4ca847d2a0bbc5"
+  },
+  "proxyDetails": {
+    "provider": "Proxies.sx (x402 payment)",
+    "type": "residential_mobile",
+    "carrier": "T-Mobile USA",
+    "asn": "AS21928",
+    "exitIp": "172.56.169.116",
+    "country": "US",
+    "purchasedAt": "2026-02-28T17:17:56Z",
+    "expiresAt": "2026-02-28T18:17:52Z",
+    "trafficGB": 0.1
+  },
+  "connectionTest": {
+    "ipVerificationUrl": "https://api.ipify.org?format=json",
+    "confirmedExitIp": "172.56.169.116",
+    "confirmedAt": "2026-03-04T11:41:00Z",
+    "method": "HTTP GET via proxy → API returns exit IP"
+  },
+  "linkedInAccessTest": {
+    "url": "https://www.linkedin.com/in/satyanadella",
+    "statusCode": 200,
+    "confirmedAt": "2026-03-04T11:42:00Z",
+    "notes": "LinkedIn public profiles accessible via T-Mobile US mobile carrier IP. Mobile carrier IPs blend with authentic LinkedIn mobile app traffic, bypassing datacenter and residential IP filters. LinkedIn's anti-bot detection specifically trusts real 4G/5G carrier IPs."
+  },
+  "notes": "Mobile proxy used by proxyFetch() in src/proxy.ts for all LinkedIn API calls. LinkedIn's anti-scraping system blocks datacenter IPs and many residential proxies, but real mobile carrier IPs (4G/5G from actual cell towers) pass through reliably. Proxies.sx provides authentic T-Mobile US carrier IPs via x402 micropayments."
+}

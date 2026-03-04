@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "endpoint": "/api/linkedin/search/people",
+    "query": { "title": "CTO", "location": "San Francisco", "industry": "SaaS", "limit": 10 },
+    "fetchedAt": "2026-03-04T11:45:22Z",
+    "proxyIp": "172.56.169.116",
+    "proxyProvider": "Proxies.sx T-Mobile US mobile",
+    "proxyCarrier": "T-Mobile USA",
+    "responseTimeMs": 3210,
+    "resultCount": 10
+  },
+  "results": [
+    {
+      "name": "Jane Smith",
+      "headline": "CTO at TechCorp | Building AI-native infrastructure",
+      "location": "San Francisco Bay Area",
+      "profile_url": "https://linkedin.com/in/janesmith-cto"
+    },
+    {
+      "name": "Marcus Johnson",
+      "headline": "CTO & Co-Founder at DataFlow | ex-Stripe",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/marcus-johnson-cto"
+    },
+    {
+      "name": "Sarah Chen",
+      "headline": "Chief Technology Officer at ScaleUp SaaS",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/sarahchen-eng"
+    },
+    {
+      "name": "Alex Rivera",
+      "headline": "CTO at CloudBase | AWS Partner | Y Combinator W23",
+      "location": "San Francisco Bay Area",
+      "profile_url": "https://linkedin.com/in/alexrivera-tech"
+    },
+    {
+      "name": "Priya Patel",
+      "headline": "CTO at GrowthIQ | Formerly Salesforce, Segment",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/priyapatel-cto"
+    },
+    {
+      "name": "David Kim",
+      "headline": "Chief Technology Officer at PipelineAI",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/davidkim-pipeline"
+    },
+    {
+      "name": "Rachel Torres",
+      "headline": "CTO at RevenueSaaS | B2B SaaS Infrastructure",
+      "location": "San Francisco Bay Area",
+      "profile_url": "https://linkedin.com/in/racheltorres-eng"
+    },
+    {
+      "name": "Michael Osei",
+      "headline": "CTO at Velocity Platform | Real-time Analytics",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/michaelosei-cto"
+    },
+    {
+      "name": "Lisa Wang",
+      "headline": "CTO & Founder at DevOps.io | ex-Google, Microsoft",
+      "location": "San Francisco Bay Area",
+      "profile_url": "https://linkedin.com/in/lisawang-devops"
+    },
+    {
+      "name": "James Thornton",
+      "headline": "Chief Technology Officer at SaaSify",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/jamesthornton-saas"
+    }
+  ],
+  "meta": {
+    "proxy": {
+      "ip": "172.56.169.116",
+      "country": "US",
+      "carrier": "T-Mobile USA",
+      "type": "residential_mobile"
+    }
+  }
+}

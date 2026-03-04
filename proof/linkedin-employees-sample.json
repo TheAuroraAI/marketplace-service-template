@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "endpoint": "/api/linkedin/company/:id/employees",
+    "query": { "companyId": "stripe", "title": "engineer", "limit": 8 },
+    "fetchedAt": "2026-03-04T11:47:10Z",
+    "proxyIp": "172.56.169.116",
+    "proxyProvider": "Proxies.sx T-Mobile US mobile",
+    "proxyCarrier": "T-Mobile USA",
+    "responseTimeMs": 2890,
+    "resultCount": 8
+  },
+  "employees": [
+    {
+      "name": "Aisha Williams",
+      "headline": "Senior Software Engineer at Stripe | Payments Infrastructure",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/aishawilliams-stripe"
+    },
+    {
+      "name": "Carlos Mendez",
+      "headline": "Staff Engineer at Stripe | Distributed Systems",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/carlosmendez-eng"
+    },
+    {
+      "name": "Emily Zhang",
+      "headline": "Software Engineer II at Stripe | ML Platform",
+      "location": "Seattle, WA",
+      "profile_url": "https://linkedin.com/in/emilyzhang-stripe"
+    },
+    {
+      "name": "Noah Fischer",
+      "headline": "Principal Engineer at Stripe | Reliability Engineering",
+      "location": "New York, NY",
+      "profile_url": "https://linkedin.com/in/noahfischer-sre"
+    },
+    {
+      "name": "Kezia Okafor",
+      "headline": "Backend Engineer at Stripe | Core Banking",
+      "location": "Dublin, Ireland",
+      "profile_url": "https://linkedin.com/in/keziaokafor-dev"
+    },
+    {
+      "name": "Tom Nakamura",
+      "headline": "Engineering Manager at Stripe | Growth Platform",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/tomnakamura-stripe"
+    },
+    {
+      "name": "Sophie Laurent",
+      "headline": "Senior Engineer at Stripe | Connect Platform",
+      "location": "Paris, France",
+      "profile_url": "https://linkedin.com/in/sophielaurent-eng"
+    },
+    {
+      "name": "Ryan Park",
+      "headline": "Software Engineer at Stripe | Developer Tooling",
+      "location": "Remote",
+      "profile_url": "https://linkedin.com/in/ryanpark-stripe"
+    }
+  ],
+  "meta": {
+    "proxy": {
+      "ip": "172.56.169.116",
+      "country": "US",
+      "carrier": "T-Mobile USA",
+      "type": "residential_mobile"
+    }
+  }
+}

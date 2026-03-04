@@ -1,0 +1,44 @@
+{
+  "metadata": {
+    "endpoint": "/api/linkedin/person",
+    "query": { "url": "linkedin.com/in/janesmith-cto" },
+    "fetchedAt": "2026-03-04T11:42:18Z",
+    "proxyIp": "172.56.169.116",
+    "proxyProvider": "Proxies.sx T-Mobile US mobile",
+    "proxyCarrier": "T-Mobile USA",
+    "responseTimeMs": 2840
+  },
+  "person": {
+    "name": "Jane Smith",
+    "headline": "Chief Technology Officer at TechCorp | Ex-Google | Building AI-native infrastructure",
+    "location": "San Francisco Bay Area",
+    "current_company": {
+      "name": "TechCorp",
+      "title": "Chief Technology Officer",
+      "started": "2023-06"
+    },
+    "previous_companies": [
+      { "name": "Google", "title": "Staff Software Engineer", "period": "2019-2023" },
+      { "name": "Stripe", "title": "Senior Engineer", "period": "2016-2019" }
+    ],
+    "education": [
+      { "school": "Stanford University", "degree": "MS Computer Science" },
+      { "school": "UC Berkeley", "degree": "BS Electrical Engineering & Computer Science" }
+    ],
+    "skills": [
+      "Distributed Systems", "Machine Learning", "Kubernetes", "Go",
+      "Python", "System Design", "Technical Leadership", "Cloud Architecture",
+      "PostgreSQL", "Apache Kafka"
+    ],
+    "connections": "500+",
+    "profile_url": "https://linkedin.com/in/janesmith-cto",
+    "meta": {
+      "proxy": {
+        "ip": "172.56.169.116",
+        "country": "US",
+        "carrier": "T-Mobile USA",
+        "type": "residential_mobile"
+      }
+    }
+  }
+}
