@@ -850,7 +850,7 @@ serviceRouter.get('/reddit/search', async (c) => {
       ...result,
       meta: {
         query, sort, time, limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -892,7 +892,7 @@ serviceRouter.get('/reddit/trending', async (c) => {
       ...result,
       meta: {
         limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -946,7 +946,7 @@ serviceRouter.get('/reddit/subreddit/:name', async (c) => {
       ...result,
       meta: {
         subreddit: name, sort, time, limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -999,7 +999,7 @@ serviceRouter.get('/reddit/thread/*', async (c) => {
       ...result,
       meta: {
         permalink, sort, limit,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -1442,7 +1442,7 @@ serviceRouter.get('/airbnb/market-stats', async (c) => {
 
 // ─── X/TWITTER ROUTES ─────────────────────────────────────────────────────────
 
-const X_WALLET_ADDRESS = process.env.WALLET_ADDRESS ?? 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+const X_WALLET_ADDRESS = process.env.WALLET_ADDRESS || '';
 
 // ─── GET /api/x/search ──────────────────────────────
 
@@ -1489,7 +1489,7 @@ serviceRouter.get('/x/search', async (c) => {
       results,
       meta: {
         total_results: results.length,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -1533,7 +1533,7 @@ serviceRouter.get('/x/trending', async (c) => {
       topics,
       meta: {
         total_topics: topics.length,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -1575,7 +1575,7 @@ serviceRouter.get('/x/user/:handle', async (c) => {
 
     return c.json({
       profile,
-      meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' } },
+      meta: { proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier } },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
@@ -1623,7 +1623,7 @@ serviceRouter.get('/x/user/:handle/tweets', async (c) => {
       tweets,
       meta: {
         total_tweets: tweets.length,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -1668,7 +1668,7 @@ serviceRouter.get('/x/thread/:tweet_id', async (c) => {
       thread,
       meta: {
         thread_length: thread.length,
-        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile' },
+        proxy: { ip, country: proxy.country, host: proxy.host, type: 'mobile', carrier: proxy.carrier },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
