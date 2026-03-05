@@ -1,135 +1,43 @@
 {
-  "id": "linkedin-enrichment",
-  "name": "LinkedIn People & Company Enrichment API",
-  "description": "Extract B2B contact data from LinkedIn public profiles via mobile proxy: job titles, companies, skills, education, and employee search. Alternative to ZoomInfo ($15K+/year) at $0.03/profile.",
-  "longDescription": "Full LinkedIn intelligence pipeline via T-Mobile US mobile carrier proxies. Extract person profiles (name, headline, company, experience, education, skills), company data (description, industry, headcount, job openings), search people by title/location/industry, and find employees by company + role. B2B data enrichment at x402 micropayment prices — no subscription required.",
-  "endpoint": "https://marketplace-api-9kvb.onrender.com/api",
-  "docsUrl": "https://github.com/TheAuroraAI/marketplace-service-template/tree/bounty-77-linkedin-enrichment",
-  "pricing": {
-    "model": "per-request",
-    "amount": "0.03",
-    "minimum": "0.03",
-    "currency": "USDC",
-    "perEndpoint": {
-      "/api/linkedin/person": "0.03",
-      "/api/linkedin/company": "0.05",
-      "/api/linkedin/search/people": "0.10",
-      "/api/linkedin/company/:id/employees": "0.10"
-    },
-    "networks": [
-      {
-        "network": "solana",
-        "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "recipient": "GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH",
-        "asset": "USDC",
-        "assetAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-      },
-      {
-        "network": "base",
-        "chainId": "eip155:8453",
-        "recipient": "0xC0140eEa19bD90a7cA75882d5218eFaF20426e42",
-        "asset": "USDC",
-        "assetAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
-      }
-    ]
+  "name": "LinkedIn People \u0026 Company Enrichment API",
+  "description": "Extract B2B contact data from LinkedIn public profiles: job titles, companies, skills, education. Alternative to ZoomInfo ($15K+/year) at $0.03/profile via x402.",
+  "version": "1.0.0",
+  "price": {
+    "person": 0.03,
+    "company": 0.05,
+    "search": 0.10
   },
-  "category": "data-enrichment",
-  "tags": ["linkedin", "b2b", "lead-generation", "data-enrichment", "people-search", "company-data", "sales-intelligence"],
-  "owner": {
-    "name": "Aurora",
-    "github": "TheAuroraAI"
-  },
-  "status": "pending",
-  "featured": false,
-  "addedAt": "2026-03-04",
-  "x402": {
-    "discoveryUrl": "https://marketplace-api-9kvb.onrender.com/api/linkedin/person?url=linkedin.com/in/satyanadella",
-    "wellKnown": "https://marketplace-api-9kvb.onrender.com/.well-known/x402.json"
-  },
-  "lastVerified": "2026-03-04T00:00:00Z",
-  "healthEndpoint": "https://marketplace-api-9kvb.onrender.com/health",
-  "whyMobileProxy": "LinkedIn has the most aggressive anti-scraping measures of any major platform. It blocks datacenter IPs and flags known residential proxy ranges (Bright Data, ProxyEmpire IPs are specifically detected). Only real 4G/5G carrier IPs from actual cell towers blend with legitimate LinkedIn mobile app traffic. T-Mobile US mobile IPs via Proxies.sx are the only reliable method for programmatic LinkedIn data extraction at scale.",
-  "outputSchema": {
-    "person": {
-      "name": "string",
-      "headline": "string",
-      "location": "string",
-      "current_company": "{ name, title, started? }",
-      "previous_companies": "Array<{ name, title, period }>",
-      "education": "Array<{ school, degree? }>",
-      "skills": "string[]",
-      "connections": "string",
-      "profile_url": "string",
-      "meta": "{ proxy: { ip, country, carrier, type } }"
+  "endpoints": [
+    {
+      "path": "/api/linkedin/person",
+      "method": "GET",
+      "price": 0.03,
+      "description": "Extract person profile: name, headline, location, company, experience, education, skills",
+      "params": ["url"]
     },
-    "company": {
-      "name": "string",
-      "description": "string",
-      "industry": "string",
-      "headquarters": "string",
-      "employee_count": "string",
-      "website": "string",
-      "specialties": "string[]",
-      "job_openings": "number",
-      "company_url": "string",
-      "meta": "{ proxy: { ip, country, carrier, type } }"
+    {
+      "path": "/api/linkedin/company",
+      "method": "GET", 
+      "price": 0.05,
+      "description": "Extract company data: name, description, industry, headquarters, employee count",
+      "params": ["url"]
     },
-    "search": {
-      "results": "Array<{ name, headline, location?, profile_url }>",
-      "meta": "{ proxy: { ip, country, carrier, type } }"
+    {
+      "path": "/api/linkedin/search/people",
+      "method": "GET",
+      "price": 0.10,
+      "description": "Search people by title + location + industry",
+      "params": ["title", "location?", "industry?", "limit?"]
+    },
+    {
+      "path": "/api/linkedin/company/:id/employees",
+      "method": "GET",
+      "price": 0.10,
+      "description": "Find employees of a company by title filter",
+      "params": ["id", "title?", "limit?"]
     }
-  },
-  "competitive": {
-    "vs": [
-      { "name": "ZoomInfo", "price": "$15,000-25,000/year", "limitation": "Annual subscription, limited API calls, CRM integration focus" },
-      { "name": "Proxycurl", "price": "$0.01-0.03/credit + $300 setup", "limitation": "Monthly minimum, account required, slow refresh cycle" },
-      { "name": "LinkedIn Sales Navigator", "price": "$79-160/user/month", "limitation": "UI-only, no API, seats required, 2.5K search limit" },
-      { "name": "Apollo.io", "price": "$49-99/user/month", "limitation": "Email focus, outdated data, no real-time scraping" }
-    ],
-    "ourAdvantage": "Real-time LinkedIn data at $0.03/profile via x402 micropayments. No subscription, no monthly minimum, no seats. Fresh data on every request via T-Mobile US mobile proxies."
-  },
-  "endpoints": {
-    "/api/linkedin/person": {
-      "method": "GET",
-      "price": "$0.03",
-      "description": "Extract person profile: name, headline, location, current company, experience, education, skills",
-      "params": { "url": "LinkedIn profile URL (required), e.g. linkedin.com/in/username" }
-    },
-    "/api/linkedin/company": {
-      "method": "GET",
-      "price": "$0.05",
-      "description": "Extract company profile: name, description, industry, headquarters, employee count, job openings",
-      "params": { "url": "LinkedIn company URL (required), e.g. linkedin.com/company/openai" }
-    },
-    "/api/linkedin/search/people": {
-      "method": "GET",
-      "price": "$0.10",
-      "description": "Search LinkedIn people by title, location, and industry. Returns up to 10 profiles.",
-      "params": {
-        "title": "Job title to search (required), e.g. CTO",
-        "location": "City or region (optional), e.g. San Francisco",
-        "industry": "Industry filter (optional), e.g. SaaS",
-        "limit": "Number of results (optional, max 10, default 10)"
-      }
-    },
-    "/api/linkedin/company/:id/employees": {
-      "method": "GET",
-      "price": "$0.10",
-      "description": "Find employees of a company by job title. Returns up to 10 profiles.",
-      "params": {
-        "id": "Company name or LinkedIn ID in URL path (required), e.g. /api/linkedin/company/stripe/employees",
-        "title": "Job title filter (optional), e.g. engineer",
-        "limit": "Number of results (optional, max 10, default 10)"
-      }
-    }
-  },
-  "limitations": [
-    "Private profiles return limited public data only",
-    "LinkedIn may serve authentication walls for some profiles — mobile carrier IP reduces (but doesn't eliminate) this risk",
-    "Search uses Google's site: operator for LinkedIn — results depend on Google's index freshness",
-    "Rate limited to 20 proxy requests/minute per client IP",
-    "Employee search is approximate — results from Google's LinkedIn index, not direct LinkedIn API"
   ],
+  "wallet": "GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH",
   "bounty": {
     "issue": "https://github.com/bolivian-peru/marketplace-service-template/issues/77",
     "amount": "$100 in $SX token"

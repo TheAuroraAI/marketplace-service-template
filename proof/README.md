@@ -1,55 +1,38 @@
-# Proof: Real Airbnb Data via US Mobile Proxy
+# LinkedIn Enrichment API — Proof of Work
 
-## Data Collection Summary
+## Proxy Purchase (On-Chain)
 
-Real Airbnb listing data was fetched via a US mobile residential proxy (T-Mobile) on 2026-02-26.
+- **Transaction**: [`0xc41c873b...`](https://basescan.org/tx/0xc41c873b12ef3e2dc0769b356a16d67624ffaccc688f6482fac2f4e3a56052ef)
+- **Network**: Base L2
+- **Amount**: $0.40 USDC
+- **Provider**: Proxies.sx
+- **Exit IP**: `172.56.168.236` — T-Mobile US 4G carrier
 
-### Proxy Details
-- **Proxy IP:** 172.56.168.66 (T-Mobile US mobile residential)
-- **Provider:** Proxies.sx
-- **Verified via:** `http://ifconfig.me` through proxy
+## Live Endpoints
 
-### Data Sources
+All endpoints return HTTP 402 before payment (correct x402 behavior):
 
-| File | Source | Records |
-|------|--------|---------|
-| sample-1.json | Airbnb v2 explore_tabs API | 6 listings (full detail) |
-| sample-2.json | Airbnb v2 explore_tabs API (superhost filter) | 6 superhost listings |
-| sample-3.json | Airbnb search page HTML (StaySearchResult) | 10 listing summaries |
-
-### API Endpoint Used
-
-```
-GET https://www.airbnb.com/api/v2/explore_tabs
-  ?version=1.8.3
-  &satori_version=1.1.0
-  &items_per_grid=18
-  &locale=en
-  &currency=USD
-  &_format=for_explore_search_web
-  &refinement_paths[]=homes
-  &place_id=ChIJOwg_06VPwokRYv534QaPC8g
-  &query=New+York
-  &checkin=2026-03-10
-  &checkout=2026-03-15
-  &adults=2
+```bash
+curl https://marketplace-api-9kvb.onrender.com/api/linkedin/person?url=linkedin.com/in/satyanadella
+curl https://marketplace-api-9kvb.onrender.com/api/linkedin/company?url=linkedin.com/company/microsoft
+curl "https://marketplace-api-9kvb.onrender.com/api/linkedin/search/people?title=CTO&location=San+Francisco"
+curl https://marketplace-api-9kvb.onrender.com/api/linkedin/company/google/employees?title=engineer
 ```
 
-Response: `346,283` bytes, 18 listings with full detail.
+## Proof Files
 
-### Sample Listings Found
+- `linkedin-proxy-verification.json` — Proxy purchase receipt + connection test
+- `sample-people.json` — 10 LinkedIn profile extractions
+- `sample-companies.json` — 5 company profile extractions
+- `sample-search.json` — People search with filters
 
-| Listing ID | Name | City | Rating | Price (5 nights) | Host |
-|-----------|------|------|--------|-----------------|------|
-| 41295524 | Hotel like place - private patio and bathroom | Brooklyn | 5.0 (317 reviews) | $851 | Caio Julio (Superhost) |
-| 5298896 | Unique NYC Loft - Guest Room | New York | 5.0 (375 reviews) | — | Luke (Superhost) |
-| 1070270537377163305 | One King room at Brooklyn - Newly Renovated! | Brooklyn | 5.0 (568 reviews) | — | Hilton Brooklyn |
-| 22946469 | Room w/ private bath in Soho | New York | 5.0 (315 reviews) | $903 | Elaine (Superhost) |
+## Pricing
 
-### HTML Search Page Extraction
+| Endpoint | Price |
+|---|---|
+| Person profile | $0.03 USDC |
+| Company profile | $0.05 USDC |
+| People search | $0.10 USDC |
+| Company employees | $0.10 USDC |
 
-The search page (`/s/New-York--NY/homes`) was also fetched (695,906 bytes). The page contains 44 `StaySearchResult` entries in the JavaScript bundle, yielding 29 unique listing IDs with rating and price data.
-
-### What the Service Returns
-
-The Airbnb Intelligence service (PR #98) indexes listing data from the explore API, enriches it with pricing and host information, and surfaces it through a normalized REST API for consumption by downstream agents and services.
+**Solana Wallet**: `GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH`

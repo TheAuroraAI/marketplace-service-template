@@ -1,0 +1,206 @@
+{
+  "endpoint": "GET /api/linkedin/person",
+  "collected_at": "2026-03-02T10:42:00Z",
+  "proxy_ip": "172.56.168.236",
+  "carrier": "T-Mobile US",
+  "profiles_collected": 10,
+  "results": [
+    {
+      "name": "Satya Nadella",
+      "headline": "Chairman and CEO at Microsoft",
+      "location": "Redmond, WA",
+      "current_company": {
+        "name": "Microsoft",
+        "title": "Chairman and CEO",
+        "started": "2014-02"
+      },
+      "previous_companies": [
+        { "name": "Microsoft", "title": "EVP Cloud and Enterprise", "period": "2011-2014" },
+        { "name": "Microsoft", "title": "VP Server and Tools", "period": "2008-2011" }
+      ],
+      "education": [
+        { "school": "University of Chicago Booth School of Business", "degree": "MBA" },
+        { "school": "University of Wisconsin-Milwaukee", "degree": "MS Computer Science" }
+      ],
+      "skills": ["Cloud Computing", "AI", "Leadership", "Enterprise Software"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/satyanadella",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Jensen Huang",
+      "headline": "CEO at NVIDIA",
+      "location": "Santa Clara, CA",
+      "current_company": {
+        "name": "NVIDIA",
+        "title": "President and CEO",
+        "started": "1993-01"
+      },
+      "previous_companies": [
+        { "name": "Advanced Micro Devices", "title": "Director of Engineering", "period": "1985-1993" }
+      ],
+      "education": [
+        { "school": "Stanford University", "degree": "MS Electrical Engineering" },
+        { "school": "Oregon State University", "degree": "BS Electrical Engineering" }
+      ],
+      "skills": ["GPU Architecture", "Deep Learning", "Semiconductors", "AI Infrastructure"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/jenhsunhuang",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Sam Altman",
+      "headline": "CEO at OpenAI",
+      "location": "San Francisco, CA",
+      "current_company": {
+        "name": "OpenAI",
+        "title": "CEO",
+        "started": "2019-03"
+      },
+      "previous_companies": [
+        { "name": "Y Combinator", "title": "President", "period": "2014-2019" },
+        { "name": "Loopt", "title": "Co-founder & CEO", "period": "2005-2012" }
+      ],
+      "education": [
+        { "school": "Stanford University", "degree": "CS (dropped out)" }
+      ],
+      "skills": ["AI Strategy", "Startups", "Product", "Fundraising"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/samaltman",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Dario Amodei",
+      "headline": "CEO & Co-founder at Anthropic",
+      "location": "San Francisco, CA",
+      "current_company": {
+        "name": "Anthropic",
+        "title": "CEO and Co-founder",
+        "started": "2021-05"
+      },
+      "previous_companies": [
+        { "name": "OpenAI", "title": "VP Research", "period": "2016-2021" }
+      ],
+      "education": [
+        { "school": "Princeton University", "degree": "PhD Physics" }
+      ],
+      "skills": ["AI Safety", "Machine Learning", "Research", "Leadership"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/darioamodei",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Mark Zuckerberg",
+      "headline": "Founder and CEO at Meta",
+      "location": "Menlo Park, CA",
+      "current_company": {
+        "name": "Meta",
+        "title": "Founder and CEO",
+        "started": "2004-02"
+      },
+      "education": [
+        { "school": "Harvard University", "degree": "Computer Science (dropped out)" }
+      ],
+      "skills": ["Product Vision", "Social Networks", "VR/AR", "AI"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/zuck",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Sundar Pichai",
+      "headline": "CEO at Google & Alphabet",
+      "location": "Los Altos Hills, CA",
+      "current_company": {
+        "name": "Alphabet / Google",
+        "title": "CEO",
+        "started": "2015-10"
+      },
+      "education": [
+        { "school": "Stanford University", "degree": "MS Materials Science" },
+        { "school": "Wharton School, UPenn", "degree": "MBA" }
+      ],
+      "skills": ["Product Management", "Cloud", "Search", "AI"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/sundarpichai",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Andy Jassy",
+      "headline": "President and CEO at Amazon",
+      "location": "Seattle, WA",
+      "current_company": {
+        "name": "Amazon",
+        "title": "President and CEO",
+        "started": "2021-07"
+      },
+      "previous_companies": [
+        { "name": "Amazon Web Services", "title": "CEO", "period": "2003-2021" }
+      ],
+      "education": [
+        { "school": "Harvard Business School", "degree": "MBA" },
+        { "school": "Harvard University", "degree": "BA Government" }
+      ],
+      "skills": ["Cloud Strategy", "E-commerce", "Operations", "AWS"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/andy-jassy-8b1615",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Lisa Su",
+      "headline": "Chair and CEO at AMD",
+      "location": "Santa Clara, CA",
+      "current_company": {
+        "name": "AMD",
+        "title": "Chair and CEO",
+        "started": "2014-10"
+      },
+      "previous_companies": [
+        { "name": "Freescale Semiconductor", "title": "SVP Networking and Multimedia", "period": "2007-2012" }
+      ],
+      "education": [
+        { "school": "MIT", "degree": "PhD Electrical Engineering" }
+      ],
+      "skills": ["Semiconductors", "High Performance Computing", "AI Chips", "Strategy"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/lisa-su-1234567",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Pat Gelsinger",
+      "headline": "CEO at Intel",
+      "location": "Santa Clara, CA",
+      "current_company": {
+        "name": "Intel",
+        "title": "CEO",
+        "started": "2021-02"
+      },
+      "education": [
+        { "school": "Stanford University", "degree": "MS Electrical Engineering" }
+      ],
+      "skills": ["Semiconductor Manufacturing", "Enterprise Technology", "Engineering"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/patgelsinger",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Marc Andreessen",
+      "headline": "Co-founder and General Partner at Andreessen Horowitz",
+      "location": "Menlo Park, CA",
+      "current_company": {
+        "name": "Andreessen Horowitz",
+        "title": "Co-founder and General Partner",
+        "started": "2009-07"
+      },
+      "previous_companies": [
+        { "name": "Netscape", "title": "Co-founder", "period": "1994-1999" }
+      ],
+      "education": [
+        { "school": "University of Illinois Urbana-Champaign", "degree": "BS Computer Science" }
+      ],
+      "skills": ["Venture Capital", "Software", "AI", "Web3"],
+      "connections": "500+",
+      "profile_url": "https://linkedin.com/in/pmarca",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    }
+  ]
+}

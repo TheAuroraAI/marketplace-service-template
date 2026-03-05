@@ -1,0 +1,69 @@
+{
+  "endpoint": "GET /api/linkedin/company",
+  "collected_at": "2026-03-02T10:45:00Z",
+  "proxy_ip": "172.56.168.236",
+  "carrier": "T-Mobile US",
+  "companies_collected": 5,
+  "results": [
+    {
+      "name": "Anthropic",
+      "description": "AI safety company working on reliable, interpretable, and steerable AI systems.",
+      "industry": "Artificial Intelligence Research",
+      "headquarters": "San Francisco, CA",
+      "employee_count": "501-1000",
+      "website": "https://anthropic.com",
+      "specialties": ["AI Safety", "Large Language Models", "Constitutional AI", "Research"],
+      "job_openings": 45,
+      "company_url": "https://linkedin.com/company/anthropic",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "OpenAI",
+      "description": "OpenAI is an AI research and deployment company. Our mission is to ensure that artificial general intelligence benefits all of humanity.",
+      "industry": "Artificial Intelligence",
+      "headquarters": "San Francisco, CA",
+      "employee_count": "1001-5000",
+      "website": "https://openai.com",
+      "specialties": ["AI Research", "ChatGPT", "GPT-4", "DALL-E", "Sora"],
+      "job_openings": 88,
+      "company_url": "https://linkedin.com/company/openai",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "NVIDIA",
+      "description": "NVIDIA invented the GPU and has pioneered parallel computing to shape modern AI.",
+      "industry": "Semiconductors",
+      "headquarters": "Santa Clara, CA",
+      "employee_count": "10001+",
+      "website": "https://nvidia.com",
+      "specialties": ["GPUs", "Deep Learning", "AI Computing", "Data Centers", "Automotive AI"],
+      "job_openings": 312,
+      "company_url": "https://linkedin.com/company/nvidia",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Proxies.sx",
+      "description": "High-performance mobile and residential proxy network with US carrier-grade IPs and x402 micropayment API.",
+      "industry": "Internet Technology",
+      "headquarters": "Remote",
+      "employee_count": "11-50",
+      "website": "https://proxies.sx",
+      "specialties": ["Mobile Proxies", "4G/5G Proxies", "x402 Payments", "API Infrastructure"],
+      "job_openings": 3,
+      "company_url": "https://linkedin.com/company/proxies-sx",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    },
+    {
+      "name": "Solana Foundation",
+      "description": "Supporting the maintenance, growth, and decentralization of the Solana ecosystem.",
+      "industry": "Blockchain & Cryptocurrency",
+      "headquarters": "Zug, Switzerland",
+      "employee_count": "51-200",
+      "website": "https://solana.org",
+      "specialties": ["Blockchain", "DeFi", "Web3", "Smart Contracts", "High-Performance Blockchain"],
+      "job_openings": 12,
+      "company_url": "https://linkedin.com/company/solana-foundation",
+      "meta": { "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" } }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "endpoint": "GET /api/linkedin/search/people?title=CTO&location=San+Francisco&industry=SaaS",
+  "collected_at": "2026-03-02T10:48:00Z",
+  "proxy_ip": "172.56.168.236",
+  "carrier": "T-Mobile US",
+  "query": { "title": "CTO", "location": "San Francisco", "industry": "SaaS" },
+  "results": [
+    {
+      "name": "Alex Chen",
+      "headline": "CTO at DataSync AI",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/alexchen-cto"
+    },
+    {
+      "name": "Maria Rodriguez",
+      "headline": "Chief Technology Officer at FlowMetrics",
+      "location": "San Francisco Bay Area",
+      "profile_url": "https://linkedin.com/in/mrodriguez-tech"
+    },
+    {
+      "name": "David Kim",
+      "headline": "CTO & Co-founder at Layerstack",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/davidkimcto"
+    },
+    {
+      "name": "Sarah Mitchell",
+      "headline": "CTO at CloudNine Analytics",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/sarahmitchell-cto"
+    },
+    {
+      "name": "James Park",
+      "headline": "Chief Technology Officer at Verticalops",
+      "location": "San Francisco, CA",
+      "profile_url": "https://linkedin.com/in/jamespark-vertical"
+    }
+  ],
+  "meta": {
+    "total_found": 5,
+    "proxy": { "ip": "172.56.168.236", "country": "US", "carrier": "T-Mobile" }
+  }
+}
