@@ -4,7 +4,7 @@
   "description": "Extract Google Discover feed articles by country and category via mobile proxy. Access the personalized content feed Google shows to mobile users — data not available through any official API.",
   "longDescription": "Scrape Google Discover feed content that Google surfaces to mobile users based on interests and trending topics. Filter by country and content category (technology, business, sports, entertainment, etc.). Returns article titles, sources, snippets, images, and engagement signals. Mobile proxies are essential — Discover feed is only served to mobile device profiles.",
   "endpoint": "https://marketplace-api-9kvb.onrender.com/api",
-  "docsUrl": "https://github.com/TheAuroraAI/marketplace-service-template/tree/bounty-52-google-discover",
+  "docsUrl": "https://github.com/bolivian-peru/marketplace-service-template/pull/106",
   "pricing": {
     "model": "per-request",
     "amount": "0.02",
@@ -17,14 +17,14 @@
       {
         "network": "solana",
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "recipient": "GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH",
+        "recipient": "process.env.WALLET_ADDRESS",
         "asset": "USDC",
         "assetAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
       },
       {
         "network": "base",
         "chainId": "eip155:8453",
-        "recipient": "0xC0140eEa19bD90a7cA75882d5218eFaF20426e42",
+        "recipient": "process.env.BASE_WALLET_ADDRESS",
         "asset": "USDC",
         "assetAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
       }
