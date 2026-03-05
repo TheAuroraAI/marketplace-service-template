@@ -102,7 +102,7 @@ serviceRouter.get('/run', async (c) => {
   // Prediction Market Signal Aggregator (Issue #55 spec: GET /api/run?type=signal|arbitrage|sentiment|trending)
   const type = c.req.query('type');
   if (type === 'signal' || type === 'arbitrage' || type === 'sentiment' || type === 'trending') {
-    const predWallet = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+    const predWallet = process.env.WALLET_ADDRESS || '';
     const priceMap: Record<string, number> = { signal: 0.05, arbitrage: 0.03, sentiment: 0.02, trending: 0.04 };
     const price = priceMap[type];
     const payment = extractPayment(c);
@@ -865,7 +865,7 @@ const REDDIT_COMMENTS_PRICE = 0.01;  // $0.01 per comment thread
 // ─── GET /api/reddit/search ─────────────────────────
 
 serviceRouter.get('/reddit/search', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -919,7 +919,7 @@ serviceRouter.get('/reddit/search', async (c) => {
 // ─── GET /api/reddit/trending ───────────────────────
 
 serviceRouter.get('/reddit/trending', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -961,7 +961,7 @@ serviceRouter.get('/reddit/trending', async (c) => {
 // ─── GET /api/reddit/subreddit/:name ────────────────
 
 serviceRouter.get('/reddit/subreddit/:name', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1015,7 +1015,7 @@ serviceRouter.get('/reddit/subreddit/:name', async (c) => {
 // ─── GET /api/reddit/thread/:id ─────────────────────
 
 serviceRouter.get('/reddit/thread/*', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1321,7 +1321,7 @@ const AIRBNB_MARKET_STATS_PRICE = 0.05;
 // ─── GET /api/airbnb/search ─────────────────────────
 
 serviceRouter.get('/airbnb/search', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1371,7 +1371,7 @@ serviceRouter.get('/airbnb/search', async (c) => {
 // ─── GET /api/airbnb/listing/:id ────────────────────
 
 serviceRouter.get('/airbnb/listing/:id', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1410,7 +1410,7 @@ serviceRouter.get('/airbnb/listing/:id', async (c) => {
 // ─── GET /api/airbnb/reviews/:listing_id ────────────
 
 serviceRouter.get('/airbnb/reviews/:listing_id', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1454,7 +1454,7 @@ serviceRouter.get('/airbnb/reviews/:listing_id', async (c) => {
 // ─── GET /api/airbnb/market-stats ───────────────────
 
 serviceRouter.get('/airbnb/market-stats', async (c) => {
-  const walletAddress = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+  const walletAddress = process.env.WALLET_ADDRESS || '';
 
   const payment = extractPayment(c);
   if (!payment) {
@@ -1499,7 +1499,7 @@ serviceRouter.get('/airbnb/market-stats', async (c) => {
 
 // ─── PREDICTION MARKET SIGNAL AGGREGATOR (Bounty #55) ───
 
-const PREDICT_WALLET = process.env.SOLANA_WALLET_ADDRESS || 'GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH';
+const PREDICT_WALLET = process.env.WALLET_ADDRESS || '';
 const PREDICT_SIGNAL_PRICE = 0.05;
 const PREDICT_ARBITRAGE_PRICE = 0.03;
 const PREDICT_SENTIMENT_PRICE = 0.02;
@@ -1545,7 +1545,7 @@ serviceRouter.get('/prediction/signal', async (c) => {
 
     return c.json({
       ...result,
-      proxy: { country: proxy.country, carrier: proxy.country, type: 'mobile' },
+      proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       payment: { txHash: payment.txHash, amount: verification.amount, verified: true },
     });
   } catch (err: any) {
@@ -1586,7 +1586,7 @@ serviceRouter.get('/prediction/arbitrage', async (c) => {
 
     return c.json({
       ...result,
-      proxy: { country: proxy.country, carrier: proxy.country, type: 'mobile' },
+      proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       payment: { txHash: payment.txHash, amount: verification.amount, verified: true },
     });
   } catch (err: any) {
@@ -1638,7 +1638,7 @@ serviceRouter.get('/prediction/sentiment', async (c) => {
 
     return c.json({
       ...result,
-      proxy: { country: proxy.country, carrier: proxy.country, type: 'mobile' },
+      proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       payment: { txHash: payment.txHash, amount: verification.amount, verified: true },
     });
   } catch (err: any) {
@@ -1677,7 +1677,7 @@ serviceRouter.get('/prediction/trending', async (c) => {
 
     return c.json({
       ...result,
-      proxy: { country: proxy.country, carrier: proxy.country, type: 'mobile' },
+      proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       payment: { txHash: payment.txHash, amount: verification.amount, verified: true },
     });
   } catch (err: any) {
@@ -1742,7 +1742,7 @@ serviceRouter.get('/prediction/markets', async (c) => {
       polymarket: filteredPoly,
       kalshi: filteredKalshi,
       filters: { minVolume, minLiquidity, limit, source },
-      proxy: { country: proxy.country, carrier: proxy.country, type: 'mobile' },
+      proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       payment: { txHash: payment.txHash, amount: verification.amount, verified: true },
     });
   } catch (err: any) {

@@ -4,7 +4,7 @@
   "description": "Aggregated prediction market data from Polymarket, Kalshi, and more. Real-time odds, volume, and market signals. $0.05/query via x402.",
   "longDescription": "Aggregate prediction market data from Polymarket, Kalshi, and other major platforms. Get real-time odds, trading volume, market signals, and historical trends. Query by topic, category, or specific market. Returns structured JSON with current probabilities, volume data, price history, and cross-platform comparisons. Ideal for trading agents, research, forecasting, and decision-making automation.",
   "endpoint": "https://marketplace-api-9kvb.onrender.com",
-  "docsUrl": "https://agents.proxies.sx/marketplace/skill.md",
+  "docsUrl": "https://github.com/bolivian-peru/marketplace-service-template/pull/158",
   "pricing": {
     "model": "per-request",
     "amount": "0.05",
@@ -14,14 +14,14 @@
       {
         "network": "solana",
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "recipient": "GpXHXs5KfzfXbNKcMLNbAMsJsgPsBE7y5GtwVoiuxYvH",
+        "recipient": "process.env.WALLET_ADDRESS",
         "asset": "USDC",
         "assetAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
       },
       {
         "network": "base",
         "chainId": "eip155:8453",
-        "recipient": "0xC0140eEa19bD90a7cA75882d5218eFaF20426e42",
+        "recipient": "process.env.BASE_WALLET_ADDRESS",
         "asset": "USDC",
         "assetAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
       }
