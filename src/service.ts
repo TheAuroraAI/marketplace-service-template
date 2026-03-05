@@ -798,8 +798,8 @@ const TIKTOK_HASHTAG_PRICE_USDC = 0.01;
 const TIKTOK_CREATOR_PRICE_USDC = 0.02;
 const TIKTOK_SOUND_PRICE_USDC = 0.01;
 
-// GET /api/tiktok/trending?country=US — Trending videos, hashtags, sounds by country
-serviceRouter.get('/api/tiktok/trending', async (c) => {
+// GET /tiktok/trending?country=US — Trending videos, hashtags, sounds by country
+serviceRouter.get('/tiktok/trending', async (c) => {
   const walletAddress = process.env.WALLET_ADDRESS;
   if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
   const payment = extractPayment(c);
@@ -841,7 +841,7 @@ serviceRouter.get('/api/tiktok/trending', async (c) => {
 });
 
 // GET /api/tiktok/hashtag/:tag?country=US — Hashtag analytics + top videos
-serviceRouter.get('/api/tiktok/hashtag/:tag', async (c) => {
+serviceRouter.get('/tiktok/hashtag/:tag', async (c) => {
   const walletAddress = process.env.WALLET_ADDRESS;
   if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
   const payment = extractPayment(c);
@@ -884,7 +884,7 @@ serviceRouter.get('/api/tiktok/hashtag/:tag', async (c) => {
 });
 
 // GET /api/tiktok/creator/:username — Creator profile + followers + recent posts
-serviceRouter.get('/api/tiktok/creator/:username', async (c) => {
+serviceRouter.get('/tiktok/creator/:username', async (c) => {
   const walletAddress = process.env.WALLET_ADDRESS;
   if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
   const payment = extractPayment(c);
@@ -926,7 +926,7 @@ serviceRouter.get('/api/tiktok/creator/:username', async (c) => {
 });
 
 // GET /api/tiktok/sound/:id — Sound/music data + trending videos using it
-serviceRouter.get('/api/tiktok/sound/:id', async (c) => {
+serviceRouter.get('/tiktok/sound/:id', async (c) => {
   const walletAddress = process.env.WALLET_ADDRESS;
   if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
   const payment = extractPayment(c);
