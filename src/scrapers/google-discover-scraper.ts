@@ -48,9 +48,9 @@ const TOPIC_IDS: Record<string, string> = {
   business: 'CAAQJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB',
   entertainment: 'CAAQJggKIiBDQkFTRWdvSUwyMHZNREpxYW5RU0FtVnVHZ0pWVXlnQVAB',
   sports: 'CAAQJggKIiBDQkFTRWdvSUwyMHZNRFp1ZEdvU0FtVnVHZ0pWVXlnQVAB',
-  health: 'CAAQIggKIhZDQkFTRWhNS0FKTk',
-  world: 'CAAQJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB',
-  news: 'CAAQJggK', top: 'CAAQJggK',
+  health: 'CAAQIggKIhZDQkFTRWhNS0FKTX',
+  world: 'CAAQJggKIiBDQkFTRWdvSUwyMHZNRGRtY0hNU0FtVnVHZ0pWVXlnQVAB',
+  news: 'CAAQJggK', top: 'CAAQJggKIgM',
 };
 
 // ─── HELPERS ────────────────────────────────────────

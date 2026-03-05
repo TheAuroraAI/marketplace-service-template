@@ -790,3 +790,56 @@ serviceRouter.get('/linkedin/company/:id/employees', async (c) => {
     return c.json({ error: 'Employee search failed', message: err?.message || String(err) }, 502);
   }
 });
+
+// ─── GOOGLE DISCOVER FEED INTELLIGENCE ROUTES (Bounty #52) ──────────────────
+
+const DISCOVER_PRICE_USDC = 0.01;
+
+// GET /discover/feed?country=US&category=technology — Google Discover/News feed
+serviceRouter.get('/discover/feed', async (c) => {
+  const walletAddress = process.env.WALLET_ADDRESS;
+  if (!walletAddress) return c.json({ error: 'Service misconfigured: WALLET_ADDRESS not set' }, 500);
+
+  const payment = extractPayment(c);
+  if (!payment) {
+    return c.json(
+      build402Response('/api/discover/feed', 'Google Discover Feed Intelligence — trending content by country & category', DISCOVER_PRICE_USDC, walletAddress, {
+        input: {
+          country: 'string — ISO country code (default: US)',
+          category: 'string — technology | science | business | entertainment | sports | health | world | news (default: news)',
+        },
+        output: { country: 'string', category: 'string', discover_feed: 'DiscoverItem[]', metadata: 'object' },
+      }),
+      402,
+    );
+  }
+
+  const verification = await verifyPayment(payment, walletAddress, DISCOVER_PRICE_USDC);
+  if (!verification.valid) {
+    return c.json({ error: 'Payment verification failed', reason: verification.error }, 402);
+  }
+
+  const country = c.req.query('country') || 'US';
+  const category = c.req.query('category') || 'news';
+
+  try {
+    const result = await getDiscoverFeed(country, category, proxyFetch);
+    const proxy = getProxy();
+
+    c.header('X-Payment-Settled', 'true');
+    c.header('X-Payment-TxHash', payment.txHash);
+
+    return c.json({
+      ...result,
+      meta: { proxy: { carrier: proxy.carrier, country: proxy.country, type: proxy.type } },
+      payment: {
+        txHash: payment.txHash,
+        network: payment.network,
+        amount: verification.amount,
+        settled: true,
+      },
+    });
+  } catch (err: any) {
+    return c.json({ error: 'Google Discover feed fetch failed', message: err?.message || String(err) }, 502);
+  }
+});
