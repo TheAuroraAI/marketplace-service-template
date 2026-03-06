@@ -4,7 +4,7 @@
   "description": "Restaurant search, menu prices, and cross-platform price comparison from DoorDash, Uber Eats, and Grubhub via mobile proxy. Compare delivery fees and menu prices across platforms.",
   "longDescription": "Compare food delivery prices across DoorDash, Uber Eats, and Grubhub in real-time. Search restaurants by name or cuisine, extract full menu pricing, and compare the same restaurant's prices across multiple platforms. Essential for consumers, restaurant operators, and market researchers. Mobile proxies bypass platform-specific geo-restrictions and anti-scraping.",
   "endpoint": "https://marketplace-api-9kvb.onrender.com/api",
-  "docsUrl": "https://github.com/TheAuroraAI/marketplace-service-template/tree/bounty-76-food-delivery",
+  "docsUrl": "https://github.com/bolivian-peru/marketplace-service-template",
   "pricing": {
     "model": "per-request",
     "amount": "0.02",
