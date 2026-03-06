@@ -18,6 +18,8 @@ export interface ProxyConfig {
   user: string;
   pass: string;
   country: string;
+  carrier?: string;    // Mobile carrier (e.g. T-Mobile US)
+  type?: string;       // Proxy type (e.g. mobile)
 }
 
 export interface ProxyFetchOptions extends RequestInit {

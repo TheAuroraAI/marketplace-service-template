@@ -845,7 +845,6 @@ serviceRouter.get('/airbnb/search', async (c) => {
   try {
     const proxy = getProxy();
     const ip = await getProxyExitIp();
-    const carrier = process.env.PROXY_CARRIER || undefined;
     const listings = await searchAirbnb(location, checkin, checkout, guests, priceMin, priceMax, limit);
 
     const prices = listings.map(l => l.price_per_night).filter((p): p is number => p !== null && p > 0);
@@ -865,7 +864,7 @@ serviceRouter.get('/airbnb/search', async (c) => {
         total_listings: listings.length,
       },
       meta: {
-        proxy: { ip, country: proxy.country, ...(carrier ? { carrier } : {}), type: 'mobile' },
+        proxy: { ip, country: proxy.country, carrier: proxy.carrier, type: 'mobile' },
       },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
@@ -899,7 +898,6 @@ serviceRouter.get('/airbnb/listing/:id', async (c) => {
 
   try {
     const proxy = getProxy();
-    const carrier = process.env.PROXY_CARRIER || undefined;
     const listing = await getListingDetail(listingId);
 
     c.header('X-Payment-Settled', 'true');
@@ -907,7 +905,7 @@ serviceRouter.get('/airbnb/listing/:id', async (c) => {
 
     return c.json({
       listing,
-      meta: { proxy: { country: proxy.country, ...(carrier ? { carrier } : {}), type: 'mobile' } },
+      meta: { proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' } },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
@@ -947,7 +945,6 @@ serviceRouter.get('/airbnb/market-stats', async (c) => {
 
   try {
     const proxy = getProxy();
-    const carrier = process.env.PROXY_CARRIER || undefined;
     const stats = await getMarketStats(location, checkin, checkout);
 
     c.header('X-Payment-Settled', 'true');
@@ -955,7 +952,7 @@ serviceRouter.get('/airbnb/market-stats', async (c) => {
 
     return c.json({
       stats,
-      meta: { proxy: { country: proxy.country, ...(carrier ? { carrier } : {}), type: 'mobile' } },
+      meta: { proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' } },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
@@ -993,7 +990,6 @@ serviceRouter.get('/airbnb/reviews/:listing_id', async (c) => {
 
   try {
     const proxy = getProxy();
-    const carrier = process.env.PROXY_CARRIER || undefined;
     const reviews = await getListingReviews(listingId, limit);
 
     c.header('X-Payment-Settled', 'true');
@@ -1003,7 +999,7 @@ serviceRouter.get('/airbnb/reviews/:listing_id', async (c) => {
       listing_id: listingId,
       reviews,
       count: reviews.length,
-      meta: { proxy: { country: proxy.country, ...(carrier ? { carrier } : {}), type: 'mobile' } },
+      meta: { proxy: { country: proxy.country, carrier: proxy.carrier, type: 'mobile' } },
       payment: { txHash: payment.txHash, network: payment.network, amount: verification.amount, settled: true },
     });
   } catch (err: any) {
