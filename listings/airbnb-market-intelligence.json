@@ -4,7 +4,7 @@
   "description": "Real-time Airbnb listing data via mobile proxy: search, pricing, reviews, market stats. Replaces AirDNA ($99-999/mo) with pay-per-request pricing.",
   "longDescription": "Extract Airbnb market intelligence at micropayment prices. Search listings by location/dates/guests, get detailed property data including host info and amenities, read reviews, and compute market statistics (average daily rate, price distribution, superhost percentage). All requests through mobile carrier IPs for maximum reliability against Airbnb's bot detection.",
   "endpoint": "https://marketplace-api-9kvb.onrender.com/api/airbnb",
-  "docsUrl": "https://github.com/TheAuroraAI/marketplace-service-template/tree/bounty-78-airbnb-intelligence",
+  "docsUrl": "https://github.com/bolivian-peru/marketplace-service-template",
   "pricing": {
     "model": "per-request",
     "endpoints": [
