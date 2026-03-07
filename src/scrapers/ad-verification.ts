@@ -200,6 +200,7 @@ export async function fetchSearchAds(
     proxy: {
       country: proxy.country || country,
       type: 'mobile',
+      carrier: proxy.carrier,
     },
   };
 }
@@ -351,6 +352,7 @@ export async function fetchDisplayAds(
     proxy: {
       country: proxy.country || country,
       type: 'mobile',
+      carrier: proxy.carrier,
     },
   };
 }
@@ -551,6 +553,7 @@ export async function fetchAdvertiserAds(
     proxy: {
       country: proxy.country || country,
       type: 'mobile',
+      carrier: proxy.carrier,
     },
   };
 }
