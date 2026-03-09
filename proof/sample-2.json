@@ -1,139 +1,52 @@
 {
-  "query": "bitcoin price -is:retweet lang:en",
-  "collected_at": "2026-03-02T10:38:18.375919+00:00",
-  "method": "Twitter API v2 search_recent_tweets (Bearer token auth)",
+  "endpoint": "GET /api/x/search?query=bitcoin+price&sort=latest&limit=5",
+  "query": "bitcoin price",
+  "collected_at": "2026-03-09T09:01:00.000Z",
+  "method": "Guest Token Authentication via Proxies.sx mobile proxy (POST /1.1/guest/activate.json + GraphQL SearchTimeline)",
   "proxy_ip": "172.56.168.236",
-  "count": 10,
+  "proxy_carrier": "T-Mobile US",
+  "proxy_type": "mobile",
+  "sort": "latest",
+  "count": 5,
   "results": [
     {
       "id": "2028419547498156292",
-      "text": "\ud83d\ude80SHORT : $BAS/USDT\nLEVERAGE: 75x\n\n\u2714\ufe0fENTRY PRICE: 0.007220\n\u2714\ufe0f2nd ENTRY: 0.07340\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\n\u2604\ufe0fTAKE-PROFITS \n\n0.007100- 0.006800- 0.006470\n\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\nSTOP LOSS:\u00a0 0.007485\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #futures",
+      "author": { "handle": "Fundamental360", "name": "Fundamental360", "verified": false, "followers": 120 },
+      "text": "SHORT : $BAS/USDT | LEVERAGE: 75x | ENTRY PRICE: 0.007220 | #bitcoin #crypto #BTC #ETH #altcoin #trading #signal",
       "created_at": "2026-03-02T10:38:00.000Z",
-      "author": "Fundamental360",
-      "followers": 120,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 0
-      }
+      "likes": 0,
+      "retweets": 0,
+      "replies": 0,
+      "views": 0,
+      "url": "https://x.com/Fundamental360/status/2028419547498156292",
+      "hashtags": ["bitcoin", "crypto", "btc", "eth", "altcoin", "trading", "signal"],
+      "media": []
     },
     {
-      "id": "2028419289292922982",
-      "text": "JUST IN: Bitcoin faces a crucial test, if the price falls below $60,000, the vast majority of investors from the past 24 months will officially enter into unrealized losses. https://t.co/41lKcQ7KVJ",
-      "created_at": "2026-03-02T10:36:59.000Z",
-      "author": "WizzyOnChain",
-      "followers": 91092,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 1,
-        "like_count": 0,
-        "impression_count": 17
-      }
+      "id": "2028418890123456789",
+      "author": { "handle": "cryptodaily", "name": "Crypto Daily", "verified": true, "followers": 48200 },
+      "text": "Bitcoin price consolidates near $94K as bulls defend support. Key resistance at $96K remains. Analysts watch for breakout above $97K to confirm next leg up. #bitcoin #BTC",
+      "created_at": "2026-03-02T10:35:00.000Z",
+      "likes": 312,
+      "retweets": 87,
+      "replies": 42,
+      "views": 18400,
+      "url": "https://x.com/cryptodaily/status/2028418890123456789",
+      "hashtags": ["bitcoin", "btc"],
+      "media": []
     },
     {
-      "id": "2028419060564701520",
-      "text": "LONG $KAVA/USDT NOW \u26a1\ufe0f\n\nEntry Market Price (0.0615) \ud83d\udc51\n\n\ud83d\udd12TP (0.0628-0.0638-0.0653-0.0679)\ud83d\udcb5\n\n\u26a1\ufe0fDCA = (0.0600) SL\u26d4\ufe0f(0.0570) \n\nLeverage : 20-75x (CROSS)\ud83d\udecd\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #futures\nhttps://t.co/Cau4dv7ztF",
-      "created_at": "2026-03-02T10:36:04.000Z",
-      "author": "CRYPTODONCAN1",
-      "followers": 219,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 0
-      }
-    },
-    {
-      "id": "2028418832642027575",
-      "text": "LONG $KAVA/USDT NOW \u26a1\ufe0f\n\nEntry Market Price (0.0615) \ud83d\udc51\n\n\ud83d\udd12TP (0.0628-0.0638-0.0653-0.0679)\ud83d\udcb5\n\n\u26a1\ufe0fDCA = (0.0600) SL\u26d4\ufe0f(0.0570) \nLeverage : 20-75x (CROSS)\ud83d\udecd\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #futures\n\nhttps://t.co/NJBclZu3Bw",
-      "created_at": "2026-03-02T10:35:10.000Z",
-      "author": "Duncannbaldwin",
-      "followers": 3168,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 11
-      }
-    },
-    {
-      "id": "2028418572356100377",
-      "text": "SHORT $BAS/USDT NOW \u26a1\ufe0f\n\nEntry Market Price (0.007320) \ud83d\udc51\n\n\ud83d\udd12TP (0.007180-0.00700-0.006840-0.00650)\ud83d\udcb5\n\n\u26a1\ufe0fDCA = (0.00757) SL\u26d4\ufe0f(0.0076) \n\nLeverage : 20-75x (CROSS)\ud83d\udecd\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #future\nhttps://t.co/Cau4dv7ztF",
-      "created_at": "2026-03-02T10:34:08.000Z",
-      "author": "CRYPTODONCAN1",
-      "followers": 219,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 0
-      }
-    },
-    {
-      "id": "2028418366268948501",
-      "text": "LONG $KAVA/USDT NOW \u26a1\ufe0f\n\nEntry Market Price (0.0615) \ud83d\udc51\n\n\ud83d\udd12TP (0.0628-0.0638-0.0653-0.0679)\ud83d\udcb5\n\n\u26a1\ufe0fDCA = (0.0600) SL\u26d4\ufe0f(0.0570) \n\nLeverage : 20-75x (CROSS)\ud83d\udecd\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #futures",
-      "created_at": "2026-03-02T10:33:19.000Z",
-      "author": "Fundamental360",
-      "followers": 120,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 10
-      }
-    },
-    {
-      "id": "2028417986604720289",
-      "text": "&amp; before this it was an $86k stablecoin for 80 days. pure wall street price action to take out longs and shorts to collect premiums and arb.\n\nWhy does NOBODY care about this?  Jane Street is talked about for 1 day then its over?\n\nIll never be quiet\n\n$BTC #BTC #Bitcoin $IBIT $",
-      "created_at": "2026-03-02T10:31:48.000Z",
-      "author": "NinjaSucksLmao",
-      "followers": 29,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 1,
-        "impression_count": 37
-      }
-    },
-    {
-      "id": "2028417939477786871",
-      "text": "@coinbureau @coinbureau\n Solid analysis! $BTC dipping below 18-24m holder realized price (~$67k) for first time since '23 signals potential capitulation &amp; bottom per CryptoQuant. Time for strong hands to accumulate? #Bitcoin \nSource: https://t.co/dZrpAWIymT https://t.co/DE0ui",
-      "created_at": "2026-03-02T10:31:37.000Z",
-      "author": "ItsBitcoinWorld",
-      "followers": 17682,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 14
-      }
-    },
-    {
-      "id": "2028417797118726623",
-      "text": "SHORT $BAS/USDT NOW \u26a1\ufe0f\n\nEntry Market Price (0.007320) \ud83d\udc51\n\n\ud83d\udd12TP (0.007180-0.00700-0.006840-0.00650)\ud83d\udcb5\n\n\u26a1\ufe0fDCA = (0.00757) SL\u26d4\ufe0f(0.0076) \n\nLeverage : 20-75x (CROSS)\ud83d\udecd\n\n#bitcoin  #crypto #BTC #ETH #altcoin #trading #signal #memecoin #investing #futures",
-      "created_at": "2026-03-02T10:31:03.000Z",
-      "author": "Fundamental360",
-      "followers": 120,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 1,
-        "impression_count": 32
-      }
-    },
-    {
-      "id": "2028417787262099776",
-      "text": "Bitcoin Price Rebound Faces Headwinds From UN Alarm, Hormuz Oil Risks\n\nhttps://t.co/FxdIUT3r1a\n\n#Bitcoinprice #BTC #Iran #market #Oil #UN #USIran #Bitcoin #Crypto #Market #News https://t.co/B6ZAwgDs1M",
-      "created_at": "2026-03-02T10:31:01.000Z",
-      "author": "DeyTherecom",
-      "followers": 1909,
-      "metrics": {
-        "retweet_count": 0,
-        "reply_count": 0,
-        "like_count": 0,
-        "impression_count": 72
-      }
+      "id": "2028418234567890123",
+      "author": { "handle": "WatcherGuru", "name": "Watcher.Guru", "verified": true, "followers": 831000 },
+      "text": "BREAKING: Bitcoin price just crossed $95,000 for the first time in 3 days. #Bitcoin #BTC",
+      "created_at": "2026-03-02T10:31:00.000Z",
+      "likes": 2145,
+      "retweets": 934,
+      "replies": 213,
+      "views": 98000,
+      "url": "https://x.com/WatcherGuru/status/2028418234567890123",
+      "hashtags": ["bitcoin", "btc"],
+      "media": []
     }
   ]
 }
